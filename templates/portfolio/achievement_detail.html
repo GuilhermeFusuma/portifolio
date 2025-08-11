@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}{{ achievement.title }} - Creative Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Back Button -->
+            <div class="mb-4">
+                <a href="{{ url_for('achievements') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Achievements
+                </a>
+            </div>
+
+            <!-- Achievement Header -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h1 class="display-5 fw-bold">{{ achievement.title }}</h1>
+                        {% if achievement.category %}
+                        <span class="badge fs-6" style="background-color: {{ achievement.category.color }}">
+                            {{ achievement.category.name }}
+                        </span>
+                        {% endif %}
+                        {% if achievement.featured %}
+                        <span class="badge bg-warning text-dark fs-6 ms-2">
+                            <i class="fas fa-star me-1"></i>Featured
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="achievement-actions">
+                        <button class="btn btn-outline-danger like-btn" 
+                                data-content-type="achievement" 
+                                data-content-id="{{ achievement.id }}"
+                                data-liked="{{ user_liked | lower }}">
+                            <i class="fas fa-heart me-1"></i>
+                            <span class="like-count">{{ achievement.likes_count }}</span>
+                        </button>
+                        <a href="{{ url_for('linkedin_share', content_type='achievement', content_id=achievement.id) }}" 
+                           target="_blank" class="btn btn-outline-primary ms-2">
+                            <i class="fab fa-linkedin me-1"></i>Share
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Achievement Details -->
+                <div class="achievement-details mb-4">
+                    {% if achievement.organization %}
+                    <div class="mb-2">
+                        <strong class="text-primary">{{ achievement.organization }}</strong>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex align-items-center text-muted mb-3">
+                        {% if achievement.date_achieved %}
+                        <span class="me-3">
+                            <i class="fas fa-calendar me-1"></i>{{ achievement.date_achieved | datetime('%B %Y') }}
+                        </span>
+                        {% endif %}
+                        <span class="me-3">
+                            <i class="fas fa-eye me-1"></i>{{ achievement.views_count }} views
+                        </span>
+                        <span>
+                            <i class="fas fa-heart me-1"></i>{{ achievement.likes_count }} likes
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Certificate Link -->
+                {% if achievement.certificate_url %}
+                <div class="certificate-link mb-4">
+                    <a href="{{ achievement.certificate_url }}" target="_blank" class="btn btn-success">
+                        <i class="fas fa-certificate me-1"></i>View Certificate
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Achievement Image -->
+            {% if achievement.image_url %}
+            <div class="mb-4">
+                <img src="{{ url_for('uploaded_file', filename=achievement.image_url) }}" 
+                     class="img-fluid rounded shadow" alt="{{ achievement.title }}">
+            </div>
+            {% endif %}
+
+            <!-- Achievement Description -->
+            <div class="mb-4">
+                <h3>About This Achievement</h3>
+                <p class="lead">{{ achievement.description }}</p>
+            </div>
+
+            <!-- Achievement Content -->
+            {% if achievement.content %}
+            <div class="mb-5">
+                <div class="achievement-content">
+                    {{ achievement.content | safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Tags -->
+            {% if achievement.tags %}
+            <div class="mb-4">
+                <h5>Related Skills & Tags</h5>
+                <div class="tags">
+                    {% for tag in achievement.tags %}
+                    <span class="badge bg-light text-dark me-2 mb-2">#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <h4>Comments ({{ comments | length }})</h4>
+                
+                <!-- Add Comment Form -->
+                {% if current_user.is_authenticated %}
+                <div class="mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST" action="{{ url_for('add_comment', content_type='achievement', content_id=achievement.id) }}">
+                                {{ comment_form.hidden_tag() }}
+                                <div class="mb-3">
+                                    {{ comment_form.content.label(class="form-label") }}
+                                    {{ comment_form.content(class="form-control", rows="3", placeholder="Congratulate or share your thoughts...") }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-comment me-1"></i>Post Comment
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="mb-4">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <a href="{{ url_for('auth.login') }}">Login</a> to leave a comment.
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Comments List -->
+                {% if comments %}
+                <div class="comments-list">
+                    {% for comment in comments %}
+                    <div class="comment mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0">
+                                        {% if comment.user.profile_image %}
+                                        <img src="{{ url_for('uploaded_file', filename=comment.user.profile_image) }}" 
+                                             class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                        {% else %}
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" 
+                                             style="width: 40px; height: 40px;">
+                                            {{ comment.user.username[0].upper() }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="mb-0">{{ comment.user.full_name }}</h6>
+                                            <small class="text-muted">{{ comment.created_at | datetime }}</small>
+                                        </div>
+                                        <small class="text-muted d-block mb-2">@{{ comment.user.username }}</small>
+                                        <p class="mb-0">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No comments yet. Be the first to congratulate!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Like functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const likeBtn = document.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            const contentType = this.dataset.contentType;
+            const contentId = this.dataset.contentId;
+            
+            fetch(`/like/${contentType}/${contentId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likeCount = this.querySelector('.like-count');
+                likeCount.textContent = data.likes_count;
+                
+                if (data.liked) {
+                    this.classList.remove('btn-outline-danger');
+                    this.classList.add('btn-danger');
+                } else {
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-outline-danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

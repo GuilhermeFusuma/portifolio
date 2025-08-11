@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - Creative Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="error-page">
+                <div class="error-code mb-4">
+                    <h1 class="display-1 fw-bold text-primary">404</h1>
+                </div>
+                <h2 class="mb-3">Page Not Found</h2>
+                <p class="lead text-muted mb-4">
+                    Sorry, the page you are looking for doesn't exist or has been moved.
+                </p>
+                <div class="error-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-home me-2"></i>Go Home
+                    </a>
+                    <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

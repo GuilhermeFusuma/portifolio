@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}About Me - Creative Portfolio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero bg-gradient text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 text-center mb-4 mb-lg-0">
+                <div class="profile-image-wrapper">
+                    <img src="https://via.placeholder.com/300x300/6366f1/ffffff?text=Profile" 
+                         class="img-fluid rounded-circle shadow-lg" alt="Profile Photo">
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">About Me</h1>
+                <p class="lead mb-4">
+                    I'm a creative professional passionate about technology, design, and innovation. 
+                    With a focus on creating meaningful digital experiences, I combine technical expertise 
+                    with creative vision to build solutions that make a difference.
+                </p>
+                <div class="contact-buttons">
+                    <a href="mailto:contact@portfolio.com" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-envelope me-2"></i>Get In Touch
+                    </a>
+                    <a href="#skills" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-arrow-down me-2"></i>Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Skills & Expertise</h2>
+                <p class="lead text-muted">Technologies and skills I work with</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="skill-category text-center p-4">
+                    <div class="skill-icon mb-3">
+                        <i class="fas fa-code fa-3x text-primary"></i>
+                    </div>
+                    <h5>Frontend Development</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li>React & JavaScript</li>
+                        <li>HTML5 & CSS3</li>
+                        <li>Bootstrap & Tailwind</li>
+                        <li>Responsive Design</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="skill-category text-center p-4">
+                    <div class="skill-icon mb-3">
+                        <i class="fas fa-server fa-3x text-success"></i>
+                    </div>
+                    <h5>Backend Development</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li>Python & Flask</li>
+                        <li>Node.js & Express</li>
+                        <li>Database Design</li>
+                        <li>API Development</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="skill-category text-center p-4">
+                    <div class="skill-icon mb-3">
+                        <i class="fas fa-paint-brush fa-3x text-warning"></i>
+                    </div>
+                    <h5>Design & UX</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li>UI/UX Design</li>
+                        <li>Figma & Adobe XD</li>
+                        <li>User Research</li>
+                        <li>Prototyping</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="skill-category text-center p-4">
+                    <div class="skill-icon mb-3">
+                        <i class="fas fa-cloud fa-3x text-info"></i>
+                    </div>
+                    <h5>DevOps & Cloud</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li>AWS & Azure</li>
+                        <li>Docker & CI/CD</li>
+                        <li>Git & Version Control</li>
+                        <li>Performance Optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Timeline -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Professional Journey</h2>
+                <p class="lead text-muted">Key milestones in my career</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5>Senior Full-Stack Developer</h5>
+                            <p class="text-primary">Tech Company | 2022 - Present</p>
+                            <p class="text-muted">
+                                Leading development of enterprise web applications, mentoring junior developers, 
+                                and implementing best practices for scalable architecture.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5>Full-Stack Developer</h5>
+                            <p class="text-primary">Digital Agency | 2020 - 2022</p>
+                            <p class="text-muted">
+                                Developed responsive web applications and collaborated with design teams 
+                                to create engaging user experiences for various clients.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5>Frontend Developer</h5>
+                            <p class="text-primary">Startup Company | 2018 - 2020</p>
+                            <p class="text-muted">
+                                Built modern frontend applications using React and implemented 
+                                responsive designs with focus on performance and accessibility.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5>Computer Science Degree</h5>
+                            <p class="text-primary">University | 2014 - 2018</p>
+                            <p class="text-muted">
+                                Graduated with honors, focusing on software engineering, 
+                                algorithms, and web technologies.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values & Philosophy -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Values & Philosophy</h2>
+                <p class="lead text-muted">What drives my work and approach</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="value-card text-center p-4">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-lightbulb fa-3x text-warning"></i>
+                    </div>
+                    <h5>Innovation</h5>
+                    <p class="text-muted">
+                        Constantly exploring new technologies and approaches to solve problems 
+                        creatively and efficiently.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="value-card text-center p-4">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-users fa-3x text-primary"></i>
+                    </div>
+                    <h5>Collaboration</h5>
+                    <p class="text-muted">
+                        Believing in the power of teamwork and open communication to achieve 
+                        exceptional results.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="value-card text-center p-4">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-heart fa-3x text-danger"></i>
+                    </div>
+                    <h5>Quality</h5>
+                    <p class="text-muted">
+                        Committed to delivering high-quality work that exceeds expectations 
+                        and creates lasting value.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="display-5 fw-bold mb-4">Let's Connect</h2>
+                <p class="lead mb-4">
+                    I'm always open to discussing new opportunities, interesting projects, 
+                    or just having a conversation about technology and design.
+                </p>
+                <div class="contact-methods">
+                    <a href="mailto:contact@portfolio.com" class="btn btn-light btn-lg me-3 mb-3">
+                        <i class="fas fa-envelope me-2"></i>Email Me
+                    </a>
+                    <a href="https://linkedin.com/in/profile" target="_blank" class="btn btn-outline-light btn-lg me-3 mb-3">
+                        <i class="fab fa-linkedin me-2"></i>LinkedIn
+                    </a>
+                    <a href="https://github.com/username" target="_blank" class="btn btn-outline-light btn-lg mb-3">
+                        <i class="fab fa-github me-2"></i>GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
