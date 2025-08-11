@@ -22,4 +22,5 @@ dependencies = [
     "flask-wtf>=1.2.2",
     "pillow>=11.3.0",
     "sqlalchemy>=2.0.43",
+    "trafilatura>=2.0.0",
 ]
