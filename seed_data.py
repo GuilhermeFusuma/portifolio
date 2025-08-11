@@ -5,17 +5,21 @@ from models import User, Category, Project, Achievement, Tag
 def seed_database():
     """Seed the database with initial data"""
     with app.app_context():
-        # Create admin user
-        admin_email = app.config.get('ADMIN_EMAIL', 'admin@portfolio.com')
+        # Create admin user - Guilherme Kenji Fusuma
+        admin_email = app.config.get('ADMIN_EMAIL', 'guilherme@portfolio.com')
         admin = User.query.filter_by(email=admin_email).first()
         if not admin:
             admin = User(
-                username='admin',
+                username='GuilhermeFusuma',
                 email=admin_email,
-                first_name='Portfolio',
-                last_name='Admin',
+                first_name='Guilherme Kenji',
+                last_name='Fusuma',
                 is_admin=True,
-                bio='Creative professional passionate about technology and design.'
+                bio='''Atualmente, estou cursando o curso técnico em Análise e Desenvolvimento de Sistemas no SENAI Morvan Figueiredo, onde tenho desenvolvido múltiplos projetos que ampliaram meu conhecimento em desenvolvimento web, bancos de dados e outras áreas da tecnologia.
+
+Além dos estudos no curso técnico, fui selecionado para representar minha escola em competições que levam ao WorldSkills, especificamente na área de Computação em Nuvem. Como parte desse desafio, estou aprofundando meus conhecimentos em Cloud Computing com a AWS, desenvolvendo habilidades essenciais para arquitetura e gerenciamento de serviços em nuvem.
+
+Desde que comecei na área da tecnologia, percebi o quanto sou apaixonado por esse universo. Estou sempre em busca de novos desafios e aprendizados que aprimoram minhas competências e complementam minhas habilidades, impulsionando meu crescimento profissional.'''
             )
             admin.set_password('admin123')
             db.session.add(admin)
@@ -44,8 +48,8 @@ def seed_database():
         cert_cat = Category.query.filter_by(name='Certifications').first()
         awards_cat = Category.query.filter_by(name='Awards').first()
         
-        # Create tags
-        tags_data = ['React', 'Python', 'JavaScript', 'Flask', 'Bootstrap', 'CSS', 'HTML', 'UI/UX', 'Mobile', 'API']
+        # Create tags - Based on Guilherme's GitHub profile
+        tags_data = ['HTML5', 'CSS3', 'JavaScript', 'Node.js', 'Python', 'AWS', 'Bootstrap', 'Git', 'GitHub', 'Figma', 'Bash', 'Google Cloud', 'Canva', 'Cloud Computing', 'Web Development']
         for tag_name in tags_data:
             tag = Tag.query.filter_by(name=tag_name.lower()).first()
             if not tag:
@@ -54,64 +58,91 @@ def seed_database():
         
         db.session.commit()
         
-        # Create sample projects
+        # Create sample projects - Tailored for Guilherme's profile
+        cloud_cat = Category.query.filter_by(name='Data Science').first()  # Using this for cloud projects
         projects_data = [
             {
-                'title': 'E-Commerce Platform',
-                'description': 'A full-stack e-commerce platform built with modern technologies',
-                'content': '''<h3>Project Overview</h3>
-                <p>This comprehensive e-commerce platform demonstrates proficiency in full-stack development, incorporating modern design principles and robust functionality.</p>
+                'title': 'Sistema de Gerenciamento Web - SENAI',
+                'description': 'Aplicação web desenvolvida durante o curso técnico em Análise e Desenvolvimento de Sistemas',
+                'content': '''<h3>Visão Geral do Projeto</h3>
+                <p>Sistema web desenvolvido como parte dos projetos acadêmicos no SENAI Morvan Figueiredo. O projeto demonstra conhecimentos em desenvolvimento full-stack utilizando tecnologias modernas.</p>
                 
-                <h4>Key Features:</h4>
+                <h4>Principais Funcionalidades:</h4>
                 <ul>
-                    <li>User authentication and authorization</li>
-                    <li>Product catalog with search and filtering</li>
-                    <li>Shopping cart and checkout process</li>
-                    <li>Payment integration</li>
-                    <li>Admin dashboard for inventory management</li>
-                    <li>Responsive design for all devices</li>
+                    <li>Sistema de autenticação e autorização de usuários</li>
+                    <li>Interface responsiva para dispositivos móveis</li>
+                    <li>Gerenciamento de dados com banco de dados</li>
+                    <li>Dashboard administrativo</li>
+                    <li>Design moderno com Bootstrap</li>
                 </ul>
                 
-                <h4>Technologies Used:</h4>
-                <p>Frontend: React, Redux, Bootstrap<br>
-                Backend: Python Flask, SQLAlchemy<br>
-                Database: PostgreSQL<br>
-                Payment: Stripe API</p>
+                <h4>Tecnologias Utilizadas:</h4>
+                <p>Frontend: HTML5, CSS3, JavaScript, Bootstrap<br>
+                Backend: Node.js<br>
+                Banco de Dados: MySQL<br>
+                Ferramentas: Git, GitHub, VS Code</p>
                 
-                <h4>Challenges Overcome:</h4>
-                <p>The main challenge was implementing a secure payment system while maintaining a smooth user experience. This was solved by integrating Stripe's secure payment processing with comprehensive error handling.</p>''',
+                <h4>Aprendizados:</h4>
+                <p>Este projeto me permitiu desenvolver habilidades práticas em desenvolvimento web e compreender melhor os conceitos de arquitetura de aplicações web.</p>''',
                 'category_id': web_cat.id if web_cat else None,
-                'demo_url': 'https://demo-ecommerce.example.com',
-                'github_url': 'https://github.com/username/ecommerce-platform',
+                'github_url': 'https://github.com/GuilhermeFusuma',
                 'is_published': True,
                 'featured': True,
-                'tags': ['react', 'python', 'flask', 'javascript']
+                'tags': ['html5', 'css3', 'javascript', 'node.js', 'bootstrap']
             },
             {
-                'title': 'Portfolio Website Redesign',
-                'description': 'Modern, responsive portfolio website with interactive elements',
-                'content': '''<h3>Design Philosophy</h3>
-                <p>This portfolio redesign focused on creating a clean, modern interface that showcases work effectively while providing an engaging user experience.</p>
+                'title': 'Projeto AWS - Preparação WorldSkills',
+                'description': 'Estudos e projetos práticos em Cloud Computing com AWS para competição WorldSkills',
+                'content': '''<h3>Preparação para WorldSkills</h3>
+                <p>Como representante da minha escola na área de Computação em Nuvem, tenho desenvolvido projetos práticos com AWS para aprimorar minhas habilidades em cloud computing.</p>
                 
-                <h4>Design Principles:</h4>
+                <h4>Áreas de Estudo:</h4>
                 <ul>
-                    <li>Minimalist aesthetic with purposeful whitespace</li>
-                    <li>Consistent color palette and typography</li>
-                    <li>Smooth animations and micro-interactions</li>
-                    <li>Mobile-first responsive design</li>
-                    <li>Accessibility compliance (WCAG 2.1)</li>
+                    <li>Arquitetura de serviços em nuvem AWS</li>
+                    <li>Gerenciamento de instâncias EC2</li>
+                    <li>Configuração de redes e segurança</li>
+                    <li>Deploy de aplicações web na nuvem</li>
+                    <li>Monitoramento e logging</li>
                 </ul>
                 
-                <h4>Technical Implementation:</h4>
-                <p>Built using modern web standards with a focus on performance and SEO optimization. The site achieves a 95+ Lighthouse score across all metrics.</p>
+                <h4>Tecnologias AWS:</h4>
+                <p>EC2, S3, RDS, VPC, CloudWatch<br>
+                Ferramentas: AWS CLI, Console AWS<br>
+                Linguagens: Bash, Python</p>
                 
-                <h4>Results:</h4>
-                <p>The redesign resulted in a 40% increase in user engagement and significantly improved mobile experience.</p>''',
-                'category_id': design_cat.id if design_cat else None,
-                'demo_url': 'https://portfolio-redesign.example.com',
+                <h4>Objetivo:</h4>
+                <p>Desenvolver competências essenciais para arquitetura e gerenciamento de serviços em nuvem, preparando-me para a competição WorldSkills e para o mercado de trabalho.</p>''',
+                'category_id': cloud_cat.id if cloud_cat else None,
                 'is_published': True,
                 'featured': True,
-                'tags': ['ui/ux', 'css', 'html', 'bootstrap']
+                'tags': ['aws', 'cloud computing', 'python', 'bash']
+            },
+            {
+                'title': 'Interface Responsiva com Bootstrap',
+                'description': 'Desenvolvimento de interfaces modernas e responsivas utilizando Bootstrap e design principles',
+                'content': '''<h3>Filosofia de Design</h3>
+                <p>Projeto focado em criar interfaces limpas e modernas utilizando Bootstrap e boas práticas de UX/UI design.</p>
+                
+                <h4>Princípios Aplicados:</h4>
+                <ul>
+                    <li>Design mobile-first e responsivo</li>
+                    <li>Paleta de cores consistente</li>
+                    <li>Tipografia legível e hierárquica</li>
+                    <li>Componentes reutilizáveis</li>
+                    <li>Acessibilidade e usabilidade</li>
+                </ul>
+                
+                <h4>Ferramentas Utilizadas:</h4>
+                <p>Bootstrap 5, CSS3, Figma para prototipagem<br>
+                Canva para elementos gráficos<br>
+                Git para versionamento</p>
+                
+                <h4>Resultados:</h4>
+                <p>Interface moderna e funcional que demonstra conhecimento em design responsivo e experiência do usuário.</p>''',
+                'category_id': design_cat.id if design_cat else None,
+                'is_published': True,
+                'featured': False,
+                'tags': ['bootstrap', 'css3', 'figma', 'canva']
             }
         ]
         
@@ -129,54 +160,78 @@ def seed_database():
                 
                 db.session.add(project)
         
-        # Create sample achievements
+        # Create sample achievements - Tailored for Guilherme's academic journey
         achievements_data = [
             {
-                'title': 'AWS Certified Solutions Architect',
-                'description': 'Professional certification demonstrating expertise in AWS cloud architecture',
-                'content': '''<h3>Certification Details</h3>
-                <p>The AWS Certified Solutions Architect – Professional certification validates advanced technical skills and experience in designing distributed applications and systems on the AWS platform.</p>
+                'title': 'Selecionado para Competição WorldSkills',
+                'description': 'Representante da escola SENAI na área de Computação em Nuvem para competição WorldSkills',
+                'content': '''<h3>Conquista Acadêmica</h3>
+                <p>Fui selecionado para representar o SENAI Morvan Figueiredo na competição WorldSkills, especificamente na área de Computação em Nuvem. Esta é uma oportunidade única de demonstrar minhas habilidades técnicas em cloud computing.</p>
                 
-                <h4>Skills Demonstrated:</h4>
+                <h4>Responsabilidades:</h4>
                 <ul>
-                    <li>Design and deploy dynamically scalable, highly available, fault-tolerant, and reliable applications on AWS</li>
-                    <li>Select appropriate AWS services to design and deploy an application based on given requirements</li>
-                    <li>Migrate complex, multi-tier applications on AWS</li>
-                    <li>Design and deploy enterprise-wide scalable operations on AWS</li>
+                    <li>Aprofundar conhecimentos em AWS Cloud Computing</li>
+                    <li>Desenvolver habilidades em arquitetura de nuvem</li>
+                    <li>Praticar gerenciamento de serviços em nuvem</li>
+                    <li>Representar minha escola em competição nacional</li>
                 </ul>
                 
-                <h4>Preparation Journey:</h4>
-                <p>Dedicated 6 months to preparation including hands-on labs, practice exams, and real-world project implementation. This certification validates my expertise in cloud architecture and AWS services.</p>''',
-                'organization': 'Amazon Web Services',
-                'date_achieved': date(2024, 6, 15),
-                'category_id': cert_cat.id if cert_cat else None,
-                'certificate_url': 'https://aws.amazon.com/certification/certified-solutions-architect-professional/',
-                'is_published': True,
-                'featured': True,
-                'tags': ['aws', 'cloud', 'architecture']
-            },
-            {
-                'title': 'Best Innovation Award 2024',
-                'description': 'Recognition for innovative approach to user experience design',
-                'content': '''<h3>Award Recognition</h3>
-                <p>Received the Best Innovation Award at the Annual Design Conference 2024 for the revolutionary user interface design of the FinTech mobile application.</p>
-                
-                <h4>Innovation Highlights:</h4>
-                <ul>
-                    <li>Introduced gesture-based navigation reducing user interaction time by 35%</li>
-                    <li>Implemented AI-powered personalization features</li>
-                    <li>Created an inclusive design supporting accessibility standards</li>
-                    <li>Achieved 98% user satisfaction rating in beta testing</li>
-                </ul>
-                
-                <h4>Impact:</h4>
-                <p>The design principles developed for this project have been adopted as company standards and have influenced the broader design community through conference presentations and published articles.</p>''',
-                'organization': 'Design Conference 2024',
-                'date_achieved': date(2024, 8, 10),
+                <h4>Preparação:</h4>
+                <p>Dedicando tempo intensivo aos estudos de AWS, incluindo laboratórios práticos e projetos de arquitetura em nuvem. Esta experiência está impulsionando significativamente meu crescimento profissional na área de tecnologia.</p>''',
+                'organization': 'SENAI Morvan Figueiredo',
+                'date_achieved': date(2024, 3, 1),
                 'category_id': awards_cat.id if awards_cat else None,
                 'is_published': True,
                 'featured': True,
-                'tags': ['ui/ux', 'innovation', 'mobile']
+                'tags': ['aws', 'cloud computing', 'worldskills']
+            },
+            {
+                'title': 'Curso Técnico em Análise e Desenvolvimento de Sistemas',
+                'description': 'Formação técnica em desenvolvimento de sistemas no SENAI',
+                'content': '''<h3>Formação Técnica</h3>
+                <p>Atualmente cursando o curso técnico em Análise e Desenvolvimento de Sistemas no SENAI Morvan Figueiredo, onde tenho desenvolvido múltiplos projetos que ampliam meu conhecimento em tecnologia.</p>
+                
+                <h4>Áreas de Estudo:</h4>
+                <ul>
+                    <li>Desenvolvimento web frontend e backend</li>
+                    <li>Banco de dados e modelagem</li>
+                    <li>Análise e projeto de sistemas</li>
+                    <li>Programação orientada a objetos</li>
+                    <li>Metodologias de desenvolvimento</li>
+                </ul>
+                
+                <h4>Projetos Desenvolvidos:</h4>
+                <p>Durante o curso, desenvolvi diversos projetos práticos que consolidaram meu aprendizado e me prepararam para os desafios do mercado de tecnologia.</p>''',
+                'organization': 'SENAI Morvan Figueiredo',
+                'date_achieved': date(2024, 2, 1),
+                'category_id': cert_cat.id if cert_cat else None,
+                'is_published': True,
+                'featured': True,
+                'tags': ['web development', 'javascript', 'html5', 'css3']
+            },
+            {
+                'title': 'Projetos GitHub Publicados',
+                'description': 'Portfolio de projetos desenvolvidos e compartilhados na plataforma GitHub',
+                'content': '''<h3>Portfolio no GitHub</h3>
+                <p>Mantenho um perfil ativo no GitHub (@GuilhermeFusuma) onde compartilho meus projetos e contribuições para a comunidade de desenvolvedores.</p>
+                
+                <h4>Destaques do Perfil:</h4>
+                <ul>
+                    <li>27 seguidores e 28 seguindo na plataforma</li>
+                    <li>Projetos em HTML5, CSS3, JavaScript e Node.js</li>
+                    <li>Uso regular de Git para versionamento</li>
+                    <li>Contribuições regulares e commits ativos</li>
+                </ul>
+                
+                <h4>Tecnologias Demonstradas:</h4>
+                <p>Meus repositórios demonstram conhecimento em tecnologias web modernas, design responsivo, e boas práticas de desenvolvimento de software.</p>''',
+                'organization': 'GitHub',
+                'date_achieved': date(2024, 1, 1),
+                'category_id': cert_cat.id if cert_cat else None,
+                'certificate_url': 'https://github.com/GuilhermeFusuma',
+                'is_published': True,
+                'featured': False,
+                'tags': ['github', 'git', 'web development']
             }
         ]
         
