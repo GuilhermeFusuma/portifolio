@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     bio = db.Column(db.Text)
+    professional_journey = db.Column(db.Text)  # Editable professional journey
     profile_image = db.Column(db.String(200))
     is_admin = db.Column(db.Boolean, default=False)
     email_notifications = db.Column(db.Boolean, default=True)

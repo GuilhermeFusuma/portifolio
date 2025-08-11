@@ -50,7 +50,8 @@ class ProfileForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('First Name', validators=[Optional(), Length(max=50)])
     last_name = StringField('Last Name', validators=[Optional(), Length(max=50)])
-    bio = TextAreaField('Bio', validators=[Optional(), Length(max=500)])
+    bio = TextAreaField('Bio', validators=[Optional(), Length(max=1000)])
+    professional_journey = CKEditorField('Professional Journey', validators=[Optional()])
     profile_image = FileField('Profile Image', validators=[Optional(), FileAllowed(['jpg', 'png', 'gif', 'jpeg'], 'Images only!')])
     email_notifications = BooleanField('Email Notifications')
 

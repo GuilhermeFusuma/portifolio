@@ -108,6 +108,17 @@
                                     </div>
                                     
                                     <div class="col-12">
+                                        {{ form.professional_journey.label(class="form-label") }}
+                                        {{ form.professional_journey(class="form-control ckeditor") }}
+                                        {% if form.professional_journey.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.professional_journey.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Describe your professional journey, education, and career goals</div>
+                                    </div>
+                                    
+                                    <div class="col-12">
                                         {{ form.profile_image.label(class="form-label") }}
                                         {{ form.profile_image(class="form-control") }}
                                         {% if form.profile_image.errors %}

@@ -9,23 +9,40 @@
         <div class="row align-items-center">
             <div class="col-lg-4 text-center mb-4 mb-lg-0">
                 <div class="profile-image-wrapper">
-                    <img src="https://via.placeholder.com/300x300/6366f1/ffffff?text=Profile" 
-                         class="img-fluid rounded-circle shadow-lg" alt="Profile Photo">
+                    {% set admin_user = get_admin_user() %}
+                    {% if admin_user and admin_user.profile_image %}
+                        <img src="{{ url_for('uploaded_file', filename=admin_user.profile_image) }}" 
+                             class="img-fluid rounded-circle shadow-lg" alt="Profile Photo">
+                    {% else %}
+                        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center text-white shadow-lg" 
+                             style="width: 300px; height: 300px; font-size: 4rem;">
+                            G
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-4">About Me</h1>
-                <p class="lead mb-4">
-                    I'm a creative professional passionate about technology, design, and innovation. 
-                    With a focus on creating meaningful digital experiences, I combine technical expertise 
-                    with creative vision to build solutions that make a difference.
-                </p>
+                <h1 class="display-4 fw-bold mb-4">Sobre Mim</h1>
+                {% if admin_user and admin_user.bio %}
+                    <p class="lead mb-4">{{ admin_user.bio }}</p>
+                {% else %}
+                    <p class="lead mb-4">
+                        Estudante de Análise e Desenvolvimento de Sistemas no SENAI, especializado em Cloud Computing e selecionado para WorldSkills.
+                        Apaixonado por tecnologia, desenvolvimento web e soluções inovadoras.
+                    </p>
+                {% endif %}
                 <div class="contact-buttons">
-                    <a href="mailto:contact@portfolio.com" class="btn btn-light btn-lg me-3">
-                        <i class="fas fa-envelope me-2"></i>Get In Touch
-                    </a>
+                    {% if admin_user and admin_user.email %}
+                        <a href="mailto:{{ admin_user.email }}" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-envelope me-2"></i>Entre em Contato
+                        </a>
+                    {% else %}
+                        <a href="mailto:guilherme@portfolio.com" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-envelope me-2"></i>Entre em Contato
+                        </a>
+                    {% endif %}
                     <a href="#skills" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-arrow-down me-2"></i>Learn More
+                        <i class="fas fa-arrow-down me-2"></i>Saiba Mais
                     </a>
                 </div>
             </div>
@@ -107,67 +124,61 @@
     </div>
 </section>
 
-<!-- Experience Timeline -->
+<!-- Professional Journey -->
 <section class="py-5 bg-light">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
-                <h2 class="display-5 fw-bold">Professional Journey</h2>
-                <p class="lead text-muted">Key milestones in my career</p>
+                <h2 class="display-5 fw-bold">Jornada Profissional</h2>
+                <p class="lead text-muted">Crescimento e experiências na carreira</p>
             </div>
         </div>
         
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <h5>Senior Full-Stack Developer</h5>
-                            <p class="text-primary">Tech Company | 2022 - Present</p>
-                            <p class="text-muted">
-                                Leading development of enterprise web applications, mentoring junior developers, 
-                                and implementing best practices for scalable architecture.
-                            </p>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                {% if admin_user and admin_user.professional_journey %}
+                    <div class="journey-content">
+                        {{ admin_user.professional_journey | safe }}
+                    </div>
+                {% else %}
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Estudante SENAI - Cloud Computing</h5>
+                                <p class="text-primary">SENAI Morvan Figueiredo | 2023 - Presente</p>
+                                <p class="text-muted">
+                                    Cursando Análise e Desenvolvimento de Sistemas com especialização em Cloud Computing. 
+                                    Selecionado para representar o Brasil na WorldSkills, competição mundial de habilidades profissionais.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Desenvolvimento de Competências Técnicas</h5>
+                                <p class="text-primary">Projetos Acadêmicos | 2022 - 2023</p>
+                                <p class="text-muted">
+                                    Aprofundamento em tecnologias web, desenvolvimento full-stack, computação em nuvem. 
+                                    Participação em competições técnicas e desenvolvimento de projetos colaborativos.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h5>Início da Jornada em Tecnologia</h5>
+                                <p class="text-primary">Autodidata | 2020 - 2022</p>
+                                <p class="text-muted">
+                                    Descoberta da paixão por programação e tecnologia. Primeiros contatos com desenvolvimento web, 
+                                    HTML, CSS, JavaScript e fundamentos da computação.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <h5>Full-Stack Developer</h5>
-                            <p class="text-primary">Digital Agency | 2020 - 2022</p>
-                            <p class="text-muted">
-                                Developed responsive web applications and collaborated with design teams 
-                                to create engaging user experiences for various clients.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <h5>Frontend Developer</h5>
-                            <p class="text-primary">Startup Company | 2018 - 2020</p>
-                            <p class="text-muted">
-                                Built modern frontend applications using React and implemented 
-                                responsive designs with focus on performance and accessibility.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <h5>Computer Science Degree</h5>
-                            <p class="text-primary">University | 2014 - 2018</p>
-                            <p class="text-muted">
-                                Graduated with honors, focusing on software engineering, 
-                                algorithms, and web technologies.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>

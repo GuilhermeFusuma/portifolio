@@ -11,6 +11,13 @@ from auth import auth_bp
 # Register blueprints
 app.register_blueprint(auth_bp)
 
+# Template helper functions
+@app.context_processor
+def utility_processor():
+    def get_admin_user():
+        return User.query.filter_by(is_admin=True).first()
+    return dict(get_admin_user=get_admin_user)
+
 @app.route('/')
 def index():
     # Get featured projects and achievements
