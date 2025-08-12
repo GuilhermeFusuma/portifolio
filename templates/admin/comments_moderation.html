@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Moderate Comments - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold mb-4">Moderate Comments</h1>
+
+            {% if comments %}
+            <div class="row g-4">
+                {% for comment in comments %}
+                <div class="col-12">
+                    <div class="card {% if not comment.is_approved %}border-warning{% endif %}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="flex-shrink-0">
+                                            {% if comment.user.profile_image %}
+                                            <img src="{{ url_for('uploaded_file', filename=comment.user.profile_image) }}" 
+                                                 class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                            {% else %}
+                                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" 
+                                                 style="width: 40px; height: 40px;">
+                                                {{ comment.user.username[0].upper() }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="mb-1">{{ comment.user.full_name }}</h6>
+                                            <small class="text-muted">@{{ comment.user.username }} • {{ comment.created_at | datetime }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="comment-content">
+                                        <p>{{ comment.content }}</p>
+                                    </div>
+                                    
+                                    <div class="comment-context">
+                                        <small class="text-muted">
+                                            Comment on: 
+                                            {% if comment.project %}
+                                            <a href="{{ url_for('project_detail', id=comment.project.id) }}" target="_blank">
+                                                {{ comment.project.title }}
+                                            </a>
+                                            {% elif comment.achievement %}
+                                            <a href="{{ url_for('achievement_detail', id=comment.achievement.id) }}" target="_blank">
+                                                {{ comment.achievement.title }}
+                                            </a>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-column align-items-end h-100">
+                                        <div class="mb-2">
+                                            {% if comment.is_approved %}
+                                            <span class="badge bg-success">Approved</span>
+                                            {% else %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mt-auto">
+                                            {% if not comment.is_approved %}
+                                            <form method="POST" action="{{ url_for('admin_approve_comment', id=comment.id) }}" 
+                                                  style="display: inline;">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check me-1"></i>Approve
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            
+                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                    onclick="confirmDeleteComment('{{ comment.user.username }}', {{ comment.id }})">
+                                                <i class="fas fa-trash me-1"></i>Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-comments fa-4x text-muted"></i>
+                </div>
+                <h4 class="text-muted">No comments yet</h4>
+                <p class="text-muted">Comments will appear here when users start engaging with your content.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Comment Modal -->
+<div class="modal fade" id="deleteCommentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this comment by <strong id="commentUsername"></strong>?</p>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteCommentForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function confirmDeleteComment(username, commentId) {
+    document.getElementById('commentUsername').textContent = username;
+    document.getElementById('deleteCommentForm').action = `/admin/comment/${commentId}/delete`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteCommentModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

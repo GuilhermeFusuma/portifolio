@@ -1,0 +1,92 @@
+Create a complete online portfolio system with an admin panel, public area, authentication, social features, and responsive design, using the following specifications:
+
+1. General Structure
+Two separate folders: frontend (React with Tailwind CSS) and backend (Python with FastAPI).
+
+The backend handles authentication, managing projects/achievements, likes, comments, and external API integration.
+
+The frontend provides the user interface and communicates via REST API with the backend.
+
+Use SQLite as the default database (file-based, works well in Replit). Provide a clear path for migrating to PostgreSQL later if needed.
+
+Ensure responsiveness and compatibility with modern browsers.
+
+2. Design and Visual Identity
+Color palette in shades of purple and blue.
+
+Minimalist but interactive design with subtle animations and smooth UX.
+
+Use Tailwind CSS for styling.
+
+3. Admin Area (Restricted)
+Login allowed only for a specific email (portfolio owner).
+
+CRUD functionality for achievements and projects.
+
+Upload images, videos, or demo links.
+
+Organize by categories or tags.
+
+Option to publish or save as draft.
+
+List comments with moderation options.
+
+Internal notifications when a comment is posted.
+
+Configurable setting to enable/disable email notifications.
+
+4. Public Area (Visitors)
+View projects and achievements.
+
+Filter by categories or tags.
+
+Like button with counter (allowed for anonymous visitors).
+
+Comment field available to logged-in users only.
+
+Button to share on LinkedIn with custom preview (image, title, description).
+
+5. Authentication and Profiles
+User registration and login with email and password.
+
+OAuth login via Google and LinkedIn using a library like Authlib or social-auth.
+
+Password recovery via email.
+
+User profiles with photo and basic info.
+
+6. Backend (FastAPI + SQLite)
+Clear REST endpoints for authentication, project/achievement CRUD, likes, comments, and LinkedIn sharing.
+
+JWT authentication with refresh tokens.
+
+Protected routes for the admin panel.
+
+File upload to a local uploads/ folder (easy to migrate later).
+
+LinkedIn API integration for generating a custom share preview.
+
+Scripts or initial code to create the database and seed with at least 2 projects and 2 achievements.
+
+7. Frontend (React + Tailwind)
+Navigation for: Home, About Me, Project List, Project Details, Login, Register, Admin Panel.
+
+State management with React Context API or lightweight state (no need for Redux given simplicity).
+
+Form validation in project/achievement submission and comments.
+
+Responsive layout for desktop, tablet, and mobile.
+
+8. Documentation
+README.md with instructions to install and run the project.
+
+List of required environment variables (LinkedIn keys, Google OAuth settings, etc.).
+
+Explanation on how to configure email notification toggling.
+
+9. Notes
+Must run directly on Replit without complex setup.
+
+Dependencies listed in requirements.txt and package.json.
+
+Ready to run with one command for the backend and one for the frontend (e.g., uvicorn backend.main:app --reload and npm start).
