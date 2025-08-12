@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio - Welcome{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section position-relative overflow-hidden">
+    <div class="hero-background"></div>
+    <div class="container position-relative">
+        <div class="row min-vh-100 align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-3 fw-bold text-white mb-4 animate-fade-in-up">
+                        Building Digital
+                        <span class="text-gradient">Experiences</span>
+                    </h1>
+                    <p class="lead text-white-50 mb-5 animate-fade-in-up animation-delay-1">
+                        Full-stack developer passionate about creating innovative solutions 
+                        that make a difference. Specializing in modern web technologies 
+                        and user-centered design.
+                    </p>
+                    <div class="hero-buttons animate-fade-in-up animation-delay-2">
+                        <a href="{{ url_for('projects') }}" class="btn btn-primary btn-lg me-3 pulse-btn">
+                            <i class="fas fa-laptop-code me-2"></i>View Projects
+                        </a>
+                        <a href="{{ url_for('about') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-user me-2"></i>About Me
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-illustration animate-float">
+                    <div class="floating-card">
+                        <div class="code-preview">
+                            <div class="code-header">
+                                <span class="code-dot bg-danger"></span>
+                                <span class="code-dot bg-warning"></span>
+                                <span class="code-dot bg-success"></span>
+                            </div>
+                            <div class="code-content">
+                                <div class="code-line">
+                                    <span class="code-keyword">class</span>
+                                    <span class="code-class">Developer</span>:
+                                </div>
+                                <div class="code-line">
+                                    &nbsp;&nbsp;<span class="code-keyword">def</span>
+                                    <span class="code-function">create_amazing_apps</span>():
+                                </div>
+                                <div class="code-line">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>
+                                    <span class="code-string">"Innovation + Code"</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-arrow animate-bounce">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-project-diagram text-primary"></i>
+                    </div>
+                    <h3 class="stat-number" data-count="{{ recent_projects|length + 10 }}">0</h3>
+                    <p class="stat-label">Projects Completed</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy text-warning"></i>
+                    </div>
+                    <h3 class="stat-number" data-count="{{ featured_achievements|length + 5 }}">0</h3>
+                    <p class="stat-label">Achievements</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-code text-success"></i>
+                    </div>
+                    <h3 class="stat-number" data-count="50000">0</h3>
+                    <p class="stat-label">Lines of Code</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coffee text-info"></i>
+                    </div>
+                    <h3 class="stat-number" data-count="1200">0</h3>
+                    <p class="stat-label">Cups of Coffee</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+{% if featured_projects %}
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Featured Projects</h2>
+                <p class="lead text-muted">Some of my latest and greatest work</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="project-card h-100 animate-on-scroll">
+                    {% if project.featured_image %}
+                    <div class="project-image">
+                        <img src="{{ url_for('static', filename='uploads/' + project.featured_image) }}" 
+                             alt="{{ project.title }}" class="card-img-top">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                {% if project.demo_url %}
+                                <a href="{{ project.demo_url }}" target="_blank" class="btn btn-light btn-sm">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                {% endif %}
+                                {% if project.github_url %}
+                                <a href="{{ project.github_url }}" target="_blank" class="btn btn-light btn-sm">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <div class="project-stats">
+                                <span class="badge bg-primary me-1">
+                                    <i class="fas fa-heart"></i> {{ project.get_like_count() }}
+                                </span>
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-eye"></i> {{ project.views_count }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <p class="card-text text-muted mb-3">{{ project.description|truncate_text(120) }}</p>
+                        
+                        <div class="project-tech mb-3">
+                            {% set technologies = project.technologies|from_json %}
+                            {% for tech in technologies[:3] %}
+                            <span class="badge bg-light text-dark me-1">{{ tech }}</span>
+                            {% endfor %}
+                            {% if technologies|length > 3 %}
+                            <span class="badge bg-light text-dark">+{{ technologies|length - 3 }} more</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-auto">
+                            <a href="{{ url_for('project_detail', slug=project.slug) }}" 
+                               class="btn btn-outline-primary">
+                                Learn More <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('projects') }}" class="btn btn-primary btn-lg">
+                View All Projects <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Achievements Section -->
+{% if featured_achievements %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Recent Achievements</h2>
+                <p class="lead text-muted">Professional milestones and certifications</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for achievement in featured_achievements %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="achievement-card h-100 animate-on-scroll">
+                    <div class="card-body text-center">
+                        <div class="achievement-icon mb-3">
+                            {% if achievement.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + achievement.image) }}" 
+                                 alt="{{ achievement.title }}" class="achievement-logo">
+                            {% else %}
+                            <i class="fas fa-award fa-3x text-warning"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="card-title">{{ achievement.title }}</h5>
+                        <p class="text-muted mb-2">{{ achievement.organization }}</p>
+                        {% if achievement.date_achieved %}
+                        <p class="text-primary fw-bold mb-3">{{ achievement.date_achieved|format_date }}</p>
+                        {% endif %}
+                        <p class="card-text">{{ achievement.description|truncate_text(100) }}</p>
+                        
+                        <div class="mt-3">
+                            {% if achievement.certificate_url %}
+                            <a href="{{ achievement.certificate_url }}" target="_blank" 
+                               class="btn btn-outline-primary btn-sm me-2">
+                                <i class="fas fa-certificate me-1"></i>Certificate
+                            </a>
+                            {% endif %}
+                            <div class="mt-2">
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-heart"></i> {{ achievement.get_like_count() }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('achievements') }}" class="btn btn-primary btn-lg">
+                View All Achievements <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Skills Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Technical Skills</h2>
+                <p class="lead text-muted">Technologies and tools I work with</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-category">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-laptop-code text-primary me-2"></i>Frontend
+                    </h5>
+                    <div class="skill-tags">
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Vue.js</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">Bootstrap</span>
+                        <span class="skill-tag">Tailwind</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-category">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-server text-success me-2"></i>Backend
+                    </h5>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Flask</span>
+                        <span class="skill-tag">Django</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Express</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">Redis</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-category">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-cloud text-info me-2"></i>Cloud & DevOps
+                    </h5>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">CI/CD</span>
+                        <span class="skill-tag">Linux</span>
+                        <span class="skill-tag">Nginx</span>
+                        <span class="skill-tag">Jenkins</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-category">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-brain text-warning me-2"></i>Data & AI
+                    </h5>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Machine Learning</span>
+                        <span class="skill-tag">TensorFlow</span>
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">Pandas</span>
+                        <span class="skill-tag">NumPy</span>
+                        <span class="skill-tag">Scikit-learn</span>
+                        <span class="skill-tag">Data Analysis</span>
+                        <span class="skill-tag">Visualization</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="display-6 fw-bold mb-3">Ready to Start a Project?</h2>
+                <p class="lead mb-0">
+                    Let's collaborate and bring your ideas to life with cutting-edge technology 
+                    and innovative solutions.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="mailto:contact@portfolio.com" class="btn btn-light btn-lg">
+                    <i class="fas fa-envelope me-2"></i>Get In Touch
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Animate numbers on scroll
+function animateNumbers() {
+    const numbers = document.querySelectorAll('.stat-number');
+    numbers.forEach(number => {
+        const target = parseInt(number.getAttribute('data-count'));
+        const increment = target / 50;
+        let current = 0;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            number.textContent = Math.floor(current).toLocaleString();
+        }, 20);
+    });
+}
+
+// Intersection Observer for animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            
+            // Trigger number animation for stats section
+            if (entry.target.querySelector('.stat-number')) {
+                setTimeout(animateNumbers, 200);
+            }
+        }
+    });
+}, observerOptions);
+
+// Observe elements for animation
+document.querySelectorAll('.animate-on-scroll, .py-5').forEach(el => {
+    observer.observe(el);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Admin{% endblock %}
+
+{% block extra_head %}
+<!-- Rich Text Editor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/35.3.0/classic/ckeditor.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">{{ title }}</h1>
+                    <p class="text-muted mb-0">
+                        {% if achievement %}
+                            Update achievement details and content
+                        {% else %}
+                            Add a new achievement to your portfolio
+                        {% endif %}
+                    </p>
+                </div>
+                <a href="{{ url_for('admin_achievements') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Achievements
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Achievement Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-trophy me-2 text-warning"></i>Achievement Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="achievementForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Title -->
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label fw-bold") }}
+                            {{ form.title(class="form-control form-control-lg", placeholder="Enter achievement title") }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.title.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label fw-bold") }}
+                            {{ form.description(class="form-control", rows="3", placeholder="Brief description of the achievement") }}
+                            <div class="form-text">This will be shown in achievement listings and previews.</div>
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.description.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="mb-3">
+                            {{ form.content.label(class="form-label fw-bold") }}
+                            {{ form.content(class="form-control", id="contentEditor") }}
+                            <div class="form-text">Detailed achievement description with rich text formatting.</div>
+                            {% if form.content.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.content.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Achievement Details Row -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.organization.label(class="form-label fw-bold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                    {{ form.organization(class="form-control", placeholder="Organization name") }}
+                                </div>
+                                {% if form.organization.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.organization.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.date_achieved.label(class="form-label fw-bold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                    {{ form.date_achieved(class="form-control") }}
+                                </div>
+                                {% if form.date_achieved.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.date_achieved.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Certificate URL -->
+                        <div class="mb-3">
+                            {{ form.certificate_url.label(class="form-label fw-bold") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-certificate"></i></span>
+                                {{ form.certificate_url(class="form-control", placeholder="https://certificate.example.com") }}
+                            </div>
+                            <div class="form-text">Link to digital certificate or verification page.</div>
+                            {% if form.certificate_url.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.certificate_url.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Tags -->
+                        <div class="mb-3">
+                            {{ form.tags.label(class="form-label fw-bold") }}
+                            {{ form.tags(class="form-control", placeholder="certification, aws, cloud, professional") }}
+                            <div class="form-text">Separate tags with commas.</div>
+                            {% if form.tags.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.tags.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="d-flex gap-2">
+                            {{ form.submit(class="btn btn-success btn-lg") }}
+                            <a href="{{ url_for('admin_achievements') }}" class="btn btn-outline-secondary btn-lg">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Achievement Image Upload -->
+            <div class="admin-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Achievement Image</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Current Image Preview -->
+                    {% if achievement and achievement.image %}
+                    <div class="current-image mb-3">
+                        <img src="{{ url_for('static', filename='uploads/' + achievement.image) }}" 
+                             alt="Current achievement image" class="img-fluid rounded" id="currentImage">
+                        <small class="text-muted d-block mt-1">Current achievement image</small>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- File Upload -->
+                    <div class="mb-3">
+                        {{ form.image.label(class="form-label fw-bold") }}
+                        <div class="upload-area" id="imageUploadArea">
+                            <div class="upload-content text-center py-4">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-2">Click to upload or drag and drop</p>
+                                <small class="text-muted">PNG, JPG, GIF up to 16MB</small>
+                            </div>
+                            {{ form.image(class="d-none", id="achievementImageInput") }}
+                        </div>
+                        <div id="imagePreview" class="mt-3 d-none">
+                            <img id="previewImage" class="img-fluid rounded" alt="Preview">
+                            <small class="text-muted d-block mt-1">New image preview</small>
+                        </div>
+                        {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.image.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Achievement Settings -->
+            <div class="admin-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Achievement Settings</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Category -->
+                    <div class="mb-3">
+                        {{ form.category_id.label(class="form-label fw-bold") }}
+                        {{ form.category_id(class="form-select") }}
+                        {% if form.category_id.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.category_id.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="mb-3">
+                        {{ form.status.label(class="form-label fw-bold") }}
+                        {{ form.status(class="form-select") }}
+                        <div class="form-text">
+                            <strong>Draft:</strong> Only visible to you<br>
+                            <strong>Published:</strong> Visible to everyone
+                        </div>
+                        {% if form.status.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.status.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Featured -->
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.is_featured(class="form-check-input") }}
+                            {{ form.is_featured.label(class="form-check-label fw-bold") }}
+                        </div>
+                        <small class="form-text text-muted">
+                            Featured achievements appear on the homepage
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Achievement Stats (if editing) -->
+            {% if achievement %}
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">Achievement Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-item text-center mb-2">
+                            <div class="stat-value h4 mb-1">{{ achievement.get_like_count() }}</div>
+                            <div class="stat-label text-muted">Likes</div>
+                        </div>
+                        <div class="stat-item text-center">
+                            <div class="stat-value h4 mb-1">{{ achievement.comments|length }}</div>
+                            <div class="stat-label text-muted">Comments</div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            Created: {{ achievement.created_at|format_date }}<br>
+                            Updated: {{ achievement.updated_at|format_date }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Initialize CKEditor
+let editor;
+ClassicEditor
+    .create(document.querySelector('#contentEditor'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'outdent', 'indent', '|',
+            'blockQuote', 'insertTable', '|',
+            'undo', 'redo'
+        ]
+    })
+    .then(newEditor => {
+        editor = newEditor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+// Image upload handling
+const uploadArea = document.getElementById('imageUploadArea');
+const fileInput = document.getElementById('achievementImageInput');
+const imagePreview = document.getElementById('imagePreview');
+const previewImage = document.getElementById('previewImage');
+
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        previewImageFile(files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        previewImageFile(e.target.files[0]);
+    }
+});
+
+function previewImageFile(file) {
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            imagePreview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Form validation
+document.getElementById('achievementForm').addEventListener('submit', (e) => {
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    
+    if (!title) {
+        e.preventDefault();
+        alert('Please enter an achievement title.');
+        return;
+    }
+    
+    if (!description) {
+        e.preventDefault();
+        alert('Please enter an achievement description.');
+        return;
+    }
+    
+    // Update CKEditor content
+    if (editor) {
+        document.getElementById('content').value = editor.getData();
+    }
+});
+</script>
+{% endblock %}

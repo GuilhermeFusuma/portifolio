@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Projects - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">Manage Projects</h1>
+                    <p class="text-muted mb-0">Create, edit, and organize your portfolio projects</p>
+                </div>
+                <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>New Project
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Projects Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-laptop-code me-2 text-primary"></i>
+                        All Projects ({{ projects.total }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if projects.items %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Project</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Stats</th>
+                                    <th>Created</th>
+                                    <th>Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in projects.items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if project.featured_image %}
+                                            <img src="{{ url_for('static', filename='uploads/' + project.featured_image) }}" 
+                                                 alt="Project" class="me-3 rounded" width="60" height="45" style="object-fit: cover;">
+                                            {% else %}
+                                            <div class="project-thumb bg-light me-3 rounded d-flex align-items-center justify-content-center" 
+                                                 style="width: 60px; height: 45px;">
+                                                <i class="fas fa-laptop-code text-muted"></i>
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-1">{{ project.title }}</h6>
+                                                <small class="text-muted">{{ project.description|truncate_text(50) }}</small>
+                                                <div class="mt-1">
+                                                    {% if project.is_featured %}
+                                                    <span class="badge bg-warning text-dark">Featured</span>
+                                                    {% endif %}
+                                                    {% if project.demo_url %}
+                                                    <span class="badge bg-info">Demo</span>
+                                                    {% endif %}
+                                                    {% if project.github_url %}
+                                                    <span class="badge bg-dark">GitHub</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if project.category %}
+                                        <span class="badge" style="background-color: {{ project.category.color }};">
+                                            {{ project.category.name }}
+                                        </span>
+                                        {% else %}
+                                        <span class="text-muted">Uncategorized</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if project.status == 'published' else 'secondary' }}">
+                                            {{ project.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="stats-mini">
+                                            <small class="d-block">
+                                                <i class="fas fa-eye text-primary me-1"></i>{{ project.views_count }} views
+                                            </small>
+                                            <small class="d-block">
+                                                <i class="fas fa-heart text-danger me-1"></i>{{ project.get_like_count() }} likes
+                                            </small>
+                                            <small class="d-block">
+                                                <i class="fas fa-comments text-success me-1"></i>{{ project.comments|length }} comments
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <small>{{ project.created_at|format_date('%m/%d/%Y') }}</small>
+                                    </td>
+                                    <td>
+                                        <small>{{ project.updated_at|format_date('%m/%d/%Y') }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ url_for('project_detail', slug=project.slug) }}" 
+                                               class="btn btn-outline-primary" title="View" target="_blank">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('admin_edit_project', id=project.id) }}" 
+                                               class="btn btn-outline-secondary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    title="Delete" onclick="deleteProject({{ project.id }}, '{{ project.title }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if projects.pages > 1 %}
+                    <nav aria-label="Projects pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if projects.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_projects', page=projects.prev_num) }}">
+                                    <i class="fas fa-chevron-left me-1"></i>Previous
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for page_num in projects.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != projects.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_projects', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">…</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if projects.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_projects', page=projects.next_num) }}">
+                                    Next<i class="fas fa-chevron-right ms-1"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    
+                    {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        <i class="fas fa-laptop-code fa-4x text-muted mb-3"></i>
+                        <h4>No Projects Yet</h4>
+                        <p class="text-muted mb-4">Start building your portfolio by creating your first project.</p>
+                        <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Create Your First Project
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the project <strong id="deleteProjectTitle"></strong>?</p>
+                <p class="text-danger"><small>This action cannot be undone. All associated comments and likes will also be deleted.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function deleteProject(projectId, projectTitle) {
+    document.getElementById('deleteProjectTitle').textContent = projectTitle;
+    document.getElementById('deleteForm').action = `/admin/project/${projectId}/delete`;
+    
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+// Add hover effects to project rows
+document.querySelectorAll('tbody tr').forEach(row => {
+    row.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = 'rgba(0, 123, 255, 0.05)';
+    });
+    
+    row.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = '';
+    });
+});
+</script>
+{% endblock %}

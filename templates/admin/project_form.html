@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Admin{% endblock %}
+
+{% block extra_head %}
+<!-- Rich Text Editor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/35.3.0/classic/ckeditor.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">{{ title }}</h1>
+                    <p class="text-muted mb-0">
+                        {% if project %}
+                            Update project details and content
+                        {% else %}
+                            Create a new project for your portfolio
+                        {% endif %}
+                    </p>
+                </div>
+                <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Projects
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2 text-primary"></i>Project Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="projectForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Title -->
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label fw-bold") }}
+                            {{ form.title(class="form-control form-control-lg", placeholder="Enter project title") }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.title.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label fw-bold") }}
+                            {{ form.description(class="form-control", rows="3", placeholder="Brief description of the project") }}
+                            <div class="form-text">This will be shown in project listings and previews.</div>
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.description.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="mb-3">
+                            {{ form.content.label(class="form-label fw-bold") }}
+                            {{ form.content(class="form-control", id="contentEditor") }}
+                            <div class="form-text">Detailed project description with rich text formatting.</div>
+                            {% if form.content.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.content.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- URLs Row -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.demo_url.label(class="form-label fw-bold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-external-link-alt"></i></span>
+                                    {{ form.demo_url(class="form-control", placeholder="https://demo.example.com") }}
+                                </div>
+                                {% if form.demo_url.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.demo_url.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.github_url.label(class="form-label fw-bold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fab fa-github"></i></span>
+                                    {{ form.github_url(class="form-control", placeholder="https://github.com/user/repo") }}
+                                </div>
+                                {% if form.github_url.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.github_url.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Technologies -->
+                        <div class="mb-3">
+                            {{ form.technologies.label(class="form-label fw-bold") }}
+                            {{ form.technologies(class="form-control", placeholder="React, Flask, PostgreSQL, AWS") }}
+                            <div class="form-text">Separate technologies with commas.</div>
+                            {% if form.technologies.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.technologies.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Tags -->
+                        <div class="mb-3">
+                            {{ form.tags.label(class="form-label fw-bold") }}
+                            {{ form.tags(class="form-control", placeholder="web-development, fullstack, react") }}
+                            <div class="form-text">Separate tags with commas.</div>
+                            {% if form.tags.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.tags.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="d-flex gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                            <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-secondary btn-lg">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Featured Image Upload -->
+            <div class="admin-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Featured Image</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Current Image Preview -->
+                    {% if project and project.featured_image %}
+                    <div class="current-image mb-3">
+                        <img src="{{ url_for('static', filename='uploads/' + project.featured_image) }}" 
+                             alt="Current featured image" class="img-fluid rounded" id="currentImage">
+                        <small class="text-muted d-block mt-1">Current featured image</small>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- File Upload -->
+                    <div class="mb-3">
+                        {{ form.featured_image.label(class="form-label fw-bold") }}
+                        <div class="upload-area" id="imageUploadArea">
+                            <div class="upload-content text-center py-4">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-2">Click to upload or drag and drop</p>
+                                <small class="text-muted">PNG, JPG, GIF up to 16MB</small>
+                            </div>
+                            {{ form.featured_image(class="d-none", id="featuredImageInput") }}
+                        </div>
+                        <div id="imagePreview" class="mt-3 d-none">
+                            <img id="previewImage" class="img-fluid rounded" alt="Preview">
+                            <small class="text-muted d-block mt-1">New image preview</small>
+                        </div>
+                        {% if form.featured_image.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.featured_image.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Settings -->
+            <div class="admin-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Project Settings</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Category -->
+                    <div class="mb-3">
+                        {{ form.category_id.label(class="form-label fw-bold") }}
+                        {{ form.category_id(class="form-select") }}
+                        {% if form.category_id.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.category_id.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="mb-3">
+                        {{ form.status.label(class="form-label fw-bold") }}
+                        {{ form.status(class="form-select") }}
+                        <div class="form-text">
+                            <strong>Draft:</strong> Only visible to you<br>
+                            <strong>Published:</strong> Visible to everyone
+                        </div>
+                        {% if form.status.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.status.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Featured -->
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.is_featured(class="form-check-input") }}
+                            {{ form.is_featured.label(class="form-check-label fw-bold") }}
+                        </div>
+                        <small class="form-text text-muted">
+                            Featured projects appear on the homepage
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Stats (if editing) -->
+            {% if project %}
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">Project Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-item text-center mb-2">
+                            <div class="stat-value h4 mb-1">{{ project.views_count }}</div>
+                            <div class="stat-label text-muted">Views</div>
+                        </div>
+                        <div class="stat-item text-center mb-2">
+                            <div class="stat-value h4 mb-1">{{ project.get_like_count() }}</div>
+                            <div class="stat-label text-muted">Likes</div>
+                        </div>
+                        <div class="stat-item text-center">
+                            <div class="stat-value h4 mb-1">{{ project.comments|length }}</div>
+                            <div class="stat-label text-muted">Comments</div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            Created: {{ project.created_at|format_date }}<br>
+                            Updated: {{ project.updated_at|format_date }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Initialize CKEditor
+let editor;
+ClassicEditor
+    .create(document.querySelector('#contentEditor'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'outdent', 'indent', '|',
+            'blockQuote', 'insertTable', '|',
+            'undo', 'redo'
+        ]
+    })
+    .then(newEditor => {
+        editor = newEditor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+// Image upload handling
+const uploadArea = document.getElementById('imageUploadArea');
+const fileInput = document.getElementById('featuredImageInput');
+const imagePreview = document.getElementById('imagePreview');
+const previewImage = document.getElementById('previewImage');
+
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        previewImageFile(files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        previewImageFile(e.target.files[0]);
+    }
+});
+
+function previewImageFile(file) {
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            imagePreview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Form validation
+document.getElementById('projectForm').addEventListener('submit', (e) => {
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    
+    if (!title) {
+        e.preventDefault();
+        alert('Please enter a project title.');
+        return;
+    }
+    
+    if (!description) {
+        e.preventDefault();
+        alert('Please enter a project description.');
+        return;
+    }
+    
+    // Update CKEditor content
+    if (editor) {
+        document.getElementById('content').value = editor.getData();
+    }
+});
+
+// Auto-save functionality
+let autoSaveTimeout;
+function autoSave() {
+    clearTimeout(autoSaveTimeout);
+    autoSaveTimeout = setTimeout(() => {
+        // In a real application, you might want to implement auto-save
+        console.log('Auto-save triggered');
+    }, 30000); // Auto-save every 30 seconds
+}
+
+// Trigger auto-save on input changes
+document.querySelectorAll('input, textarea, select').forEach(input => {
+    input.addEventListener('change', autoSave);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Portfolio{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">Admin Dashboard</h1>
+                    <p class="text-muted mb-0">Manage your portfolio content and settings</p>
+                </div>
+                <div class="admin-actions">
+                    <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-1"></i>New Project
+                    </a>
+                    <a href="{{ url_for('admin_new_achievement') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>New Achievement
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-primary text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-laptop-code fa-2x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ stats.total_projects }}</h3>
+                    <p class="stat-label">Total Projects</p>
+                </div>
+                <a href="{{ url_for('admin_projects') }}" class="stat-link">
+                    View All <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-success text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-trophy fa-2x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ stats.total_achievements }}</h3>
+                    <p class="stat-label">Achievements</p>
+                </div>
+                <a href="{{ url_for('admin_achievements') }}" class="stat-link">
+                    View All <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-info text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-comments fa-2x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ stats.total_comments }}</h3>
+                    <p class="stat-label">Total Comments</p>
+                </div>
+                <a href="{{ url_for('admin_comments') }}" class="stat-link">
+                    Manage <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-warning text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-clock fa-2x"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ stats.pending_comments }}</h3>
+                    <p class="stat-label">Pending Comments</p>
+                </div>
+                <a href="{{ url_for('admin_comments', status='pending') }}" class="stat-link">
+                    Review <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Recent Projects -->
+        <div class="col-lg-8 mb-4">
+            <div class="admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-laptop-code me-2 text-primary"></i>Recent Projects
+                    </h5>
+                    <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-primary btn-sm">
+                        View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_projects %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Views</th>
+                                    <th>Likes</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in recent_projects %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if project.featured_image %}
+                                            <img src="{{ url_for('static', filename='uploads/' + project.featured_image) }}" 
+                                                 alt="Project" class="me-2 rounded" width="40" height="30" style="object-fit: cover;">
+                                            {% else %}
+                                            <div class="project-thumb bg-light me-2 rounded d-flex align-items-center justify-content-center" 
+                                                 style="width: 40px; height: 30px;">
+                                                <i class="fas fa-laptop-code text-muted"></i>
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                <strong>{{ project.title }}</strong>
+                                                {% if project.is_featured %}
+                                                <span class="badge bg-warning text-dark ms-1">Featured</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if project.status == 'published' else 'secondary' }}">
+                                            {{ project.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td>{{ project.views_count }}</td>
+                                    <td>{{ project.get_like_count() }}</td>
+                                    <td>{{ project.created_at|format_date('%m/%d/%Y') }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ url_for('project_detail', slug=project.slug) }}" 
+                                               class="btn btn-outline-primary" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('admin_edit_project', id=project.id) }}" 
+                                               class="btn btn-outline-secondary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-laptop-code fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No projects found</p>
+                        <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary">
+                            Create Your First Project
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Pending Comments -->
+            <div class="admin-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2 text-warning"></i>Pending Comments
+                    </h5>
+                    <a href="{{ url_for('admin_comments', status='pending') }}" class="btn btn-outline-warning btn-sm">
+                        Review All
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_comments %}
+                    <div class="comment-list">
+                        {% for comment in recent_comments %}
+                        <div class="comment-item">
+                            <div class="d-flex align-items-start">
+                                <div class="comment-avatar me-2">
+                                    {% if comment.author.profile_image %}
+                                    <img src="{{ url_for('static', filename='uploads/' + comment.author.profile_image) }}" 
+                                         alt="User" class="rounded-circle" width="32" height="32">
+                                    {% else %}
+                                    <div class="avatar-placeholder rounded-circle">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="comment-content flex-grow-1">
+                                    <div class="comment-header">
+                                        <strong>{{ comment.author.username }}</strong>
+                                        <small class="text-muted">{{ comment.created_at|format_date('%m/%d %I:%M %p') }}</small>
+                                    </div>
+                                    <p class="comment-text mb-1">{{ comment.content|truncate_text(80) }}</p>
+                                    {% if comment.project %}
+                                    <small class="text-primary">On: {{ comment.project.title }}</small>
+                                    {% elif comment.achievement %}
+                                    <small class="text-success">On: {{ comment.achievement.title }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="comment-actions mt-2">
+                                <form method="POST" action="{{ url_for('admin_approve_comment', id=comment.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('admin_delete_comment', id=comment.id) }}" 
+                                      class="d-inline" onsubmit="return confirm('Delete this comment?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% if not loop.last %}<hr class="my-3">{% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="text-muted mb-0">No pending comments</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2 text-info"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>New Project
+                        </a>
+                        <a href="{{ url_for('admin_new_achievement') }}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>New Achievement
+                        </a>
+                        <a href="{{ url_for('admin_comments') }}" class="btn btn-warning">
+                            <i class="fas fa-comments me-2"></i>Manage Comments
+                        </a>
+                        <a href="{{ url_for('profile') }}" class="btn btn-info">
+                            <i class="fas fa-user me-2"></i>Edit Profile
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>View Site
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Auto-refresh pending comments count
+setInterval(() => {
+    fetch('/admin/comments?format=json&status=pending')
+        .then(response => response.json())
+        .then(data => {
+            const pendingBadge = document.querySelector('.stat-card.bg-warning .stat-number');
+            if (pendingBadge && data.count !== undefined) {
+                pendingBadge.textContent = data.count;
+            }
+        })
+        .catch(error => console.log('Auto-refresh error:', error));
+}, 30000); // Refresh every 30 seconds
+
+// Animate stat numbers on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const target = parseInt(stat.textContent);
+        const increment = Math.ceil(target / 20);
+        let current = 0;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            stat.textContent = current;
+        }, 50);
+    });
+});
+</script>
+{% endblock %}

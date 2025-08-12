@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Achievements - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">Manage Achievements</h1>
+                    <p class="text-muted mb-0">Create, edit, and organize your professional achievements</p>
+                </div>
+                <a href="{{ url_for('admin_new_achievement') }}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>New Achievement
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Achievements Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-trophy me-2 text-warning"></i>
+                        All Achievements ({{ achievements.total }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if achievements.items %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Achievement</th>
+                                    <th>Organization</th>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Stats</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for achievement in achievements.items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if achievement.image %}
+                                            <img src="{{ url_for('static', filename='uploads/' + achievement.image) }}" 
+                                                 alt="Achievement" class="me-3 rounded" width="50" height="50" style="object-fit: cover;">
+                                            {% else %}
+                                            <div class="achievement-thumb bg-light me-3 rounded d-flex align-items-center justify-content-center" 
+                                                 style="width: 50px; height: 50px;">
+                                                <i class="fas fa-trophy text-warning"></i>
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-1">{{ achievement.title }}</h6>
+                                                <small class="text-muted">{{ achievement.description|truncate_text(50) }}</small>
+                                                <div class="mt-1">
+                                                    {% if achievement.is_featured %}
+                                                    <span class="badge bg-warning text-dark">Featured</span>
+                                                    {% endif %}
+                                                    {% if achievement.certificate_url %}
+                                                    <span class="badge bg-info">Certificate</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if achievement.organization %}
+                                        <strong>{{ achievement.organization }}</strong>
+                                        {% else %}
+                                        <span class="text-muted">Not specified</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if achievement.date_achieved %}
+                                        {{ achievement.date_achieved|format_date('%b %Y') }}
+                                        {% else %}
+                                        <span class="text-muted">Not specified</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if achievement.category %}
+                                        <span class="badge" style="background-color: {{ achievement.category.color }};">
+                                            {{ achievement.category.name }}
+                                        </span>
+                                        {% else %}
+                                        <span class="text-muted">Uncategorized</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if achievement.status == 'published' else 'secondary' }}">
+                                            {{ achievement.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="stats-mini">
+                                            <small class="d-block">
+                                                <i class="fas fa-heart text-danger me-1"></i>{{ achievement.get_like_count() }} likes
+                                            </small>
+                                            <small class="d-block">
+                                                <i class="fas fa-comments text-success me-1"></i>{{ achievement.comments|length }} comments
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            {% if achievement.certificate_url %}
+                                            <a href="{{ achievement.certificate_url }}" target="_blank"
+                                               class="btn btn-outline-info" title="View Certificate">
+                                                <i class="fas fa-certificate"></i>
+                                            </a>
+                                            {% endif %}
+                                            <a href="{{ url_for('admin_edit_achievement', id=achievement.id) }}" 
+                                               class="btn btn-outline-secondary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    title="Delete" onclick="deleteAchievement({{ achievement.id }}, '{{ achievement.title }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if achievements.pages > 1 %}
+                    <nav aria-label="Achievements pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if achievements.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_achievements', page=achievements.prev_num) }}">
+                                    <i class="fas fa-chevron-left me-1"></i>Previous
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for page_num in achievements.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != achievements.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_achievements', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">…</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if achievements.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_achievements', page=achievements.next_num) }}">
+                                    Next<i class="fas fa-chevron-right ms-1"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    
+                    {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        <i class="fas fa-trophy fa-4x text-muted mb-3"></i>
+                        <h4>No Achievements Yet</h4>
+                        <p class="text-muted mb-4">Start showcasing your professional accomplishments by adding your first achievement.</p>
+                        <a href="{{ url_for('admin_new_achievement') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-plus me-2"></i>Add Your First Achievement
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the achievement <strong id="deleteAchievementTitle"></strong>?</p>
+                <p class="text-danger"><small>This action cannot be undone. All associated comments and likes will also be deleted.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete Achievement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function deleteAchievement(achievementId, achievementTitle) {
+    document.getElementById('deleteAchievementTitle').textContent = achievementTitle;
+    document.getElementById('deleteForm').action = `/admin/achievement/${achievementId}/delete`;
+    
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+// Add hover effects to achievement rows
+document.querySelectorAll('tbody tr').forEach(row => {
+    row.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = 'rgba(255, 193, 7, 0.05)';
+    });
+    
+    row.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = '';
+    });
+});
+</script>
+{% endblock %}

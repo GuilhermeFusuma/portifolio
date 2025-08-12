@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Comments - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">Manage Comments</h1>
+                    <p class="text-muted mb-0">Review, approve, and moderate user comments</p>
+                </div>
+                <div class="comment-stats">
+                    <span class="badge bg-warning fs-6 me-2">
+                        {{ comments.items|selectattr('is_approved', 'equalto', false)|list|length }} Pending
+                    </span>
+                    <span class="badge bg-success fs-6">
+                        {{ comments.items|selectattr('is_approved', 'equalto', true)|list|length }} Approved
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Tabs -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if current_status == 'pending' else '' }}" 
+                       href="{{ url_for('admin_comments', status='pending') }}">
+                        <i class="fas fa-clock me-2"></i>Pending
+                        <span class="badge bg-light text-dark ms-1">
+                            {{ comments.items|selectattr('is_approved', 'equalto', false)|list|length if current_status == 'pending' else '...' }}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if current_status == 'approved' else '' }}" 
+                       href="{{ url_for('admin_comments', status='approved') }}">
+                        <i class="fas fa-check me-2"></i>Approved
+                        <span class="badge bg-light text-dark ms-1">
+                            {{ comments.items|selectattr('is_approved', 'equalto', true)|list|length if current_status == 'approved' else '...' }}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if current_status == 'all' else '' }}" 
+                       href="{{ url_for('admin_comments') }}">
+                        <i class="fas fa-list me-2"></i>All Comments
+                        <span class="badge bg-light text-dark ms-1">{{ comments.total }}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Comments List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2 text-primary"></i>
+                        {{ current_status.title() }} Comments ({{ comments.total }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if comments.items %}
+                    <div class="comments-list">
+                        {% for comment in comments.items %}
+                        <div class="comment-item {{ 'pending' if not comment.is_approved else 'approved' }}">
+                            <div class="comment-header d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <!-- User Avatar -->
+                                    <div class="comment-avatar me-3">
+                                        {% if comment.author.profile_image %}
+                                        <img src="{{ url_for('static', filename='uploads/' + comment.author.profile_image) }}" 
+                                             alt="User" class="rounded-circle" width="40" height="40">
+                                        {% else %}
+                                        <div class="avatar-placeholder rounded-circle">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Comment Meta -->
+                                    <div>
+                                        <h6 class="mb-0">{{ comment.author.full_name or comment.author.username }}</h6>
+                                        <small class="text-muted">
+                                            {{ comment.created_at|format_date('%B %d, %Y at %I:%M %p') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Status Badge -->
+                                <span class="badge bg-{{ 'success' if comment.is_approved else 'warning' }}">
+                                    {{ 'Approved' if comment.is_approved else 'Pending' }}
+                                </span>
+                            </div>
+                            
+                            <!-- Comment Content -->
+                            <div class="comment-content mb-3">
+                                <p class="mb-2">{{ comment.content }}</p>
+                                
+                                <!-- Related Content -->
+                                <div class="comment-context">
+                                    {% if comment.project %}
+                                    <small class="text-primary">
+                                        <i class="fas fa-laptop-code me-1"></i>
+                                        Comment on project: 
+                                        <a href="{{ url_for('project_detail', slug=comment.project.slug) }}" 
+                                           target="_blank" class="text-decoration-none">
+                                            {{ comment.project.title }}
+                                        </a>
+                                    </small>
+                                    {% elif comment.achievement %}
+                                    <small class="text-success">
+                                        <i class="fas fa-trophy me-1"></i>
+                                        Comment on achievement: 
+                                        <strong>{{ comment.achievement.title }}</strong>
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Comment Actions -->
+                            <div class="comment-actions">
+                                {% if not comment.is_approved %}
+                                <form method="POST" action="{{ url_for('admin_approve_comment', id=comment.id) }}" 
+                                      class="d-inline me-2">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </button>
+                                </form>
+                                {% endif %}
+                                
+                                {% if comment.project %}
+                                <a href="{{ url_for('project_detail', slug=comment.project.slug) }}" 
+                                   target="_blank" class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="fas fa-external-link-alt me-1"></i>View Project
+                                </a>
+                                {% endif %}
+                                
+                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                        onclick="deleteComment({{ comment.id }}, '{{ comment.author.username }}')">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {% if not loop.last %}
+                        <hr class="my-4">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if comments.pages > 1 %}
+                    <nav aria-label="Comments pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if comments.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_comments', page=comments.prev_num, status=current_status) }}">
+                                    <i class="fas fa-chevron-left me-1"></i>Previous
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for page_num in comments.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != comments.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_comments', page=page_num, status=current_status) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">…</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if comments.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_comments', page=comments.next_num, status=current_status) }}">
+                                    Next<i class="fas fa-chevron-right ms-1"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    
+                    {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        {% if current_status == 'pending' %}
+                        <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                        <h4>All Caught Up!</h4>
+                        <p class="text-muted">No pending comments to review at the moment.</p>
+                        {% elif current_status == 'approved' %}
+                        <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+                        <h4>No Approved Comments</h4>
+                        <p class="text-muted">Approved comments will appear here once you start moderating.</p>
+                        {% else %}
+                        <i class="fas fa-comment-slash fa-4x text-muted mb-3"></i>
+                        <h4>No Comments Yet</h4>
+                        <p class="text-muted">Comments from users will appear here for moderation.</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the comment from <strong id="deleteCommentAuthor"></strong>?</p>
+                <p class="text-danger"><small>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function deleteComment(commentId, authorName) {
+    document.getElementById('deleteCommentAuthor').textContent = authorName;
+    document.getElementById('deleteForm').action = `/admin/comment/${commentId}/delete`;
+    
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+// Auto-refresh pending comments count every 30 seconds
+setInterval(() => {
+    if (window.location.pathname === '/admin/comments') {
+        // Only refresh if we're on the main comments page
+        fetch('/admin/comments?status=pending&format=json')
+            .then(response => response.json())
+            .then(data => {
+                // Update pending badge if the endpoint supports it
+                console.log('Auto-refresh completed');
+            })
+            .catch(error => console.log('Auto-refresh error:', error));
+    }
+}, 30000);
+
+// Mark comments as read when they come into view
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('viewed');
+        }
+    });
+}, {
+    threshold: 0.5
+});
+
+document.querySelectorAll('.comment-item').forEach(item => {
+    observer.observe(item);
+});
+</script>
+{% endblock %}

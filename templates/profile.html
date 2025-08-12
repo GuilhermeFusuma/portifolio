@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-lg-4 mb-4">
+            <div class="profile-sidebar">
+                <!-- Profile Card -->
+                <div class="profile-card text-center mb-4">
+                    <div class="profile-image mb-3">
+                        {% if current_user.profile_image %}
+                        <img src="{{ url_for('static', filename='uploads/' + current_user.profile_image) }}" 
+                             alt="Profile" class="rounded-circle profile-img" id="currentProfileImage">
+                        {% else %}
+                        <div class="profile-placeholder rounded-circle" id="profilePlaceholder">
+                            <i class="fas fa-user fa-3x text-muted"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h3 class="fw-bold mb-1">{{ current_user.full_name or current_user.username }}</h3>
+                    <p class="text-muted mb-2">{{ current_user.email }}</p>
+                    {% if current_user.is_admin %}
+                    <span class="badge bg-primary mb-3">Administrator</span>
+                    {% endif %}
+                    
+                    {% if current_user.bio %}
+                    <p class="text-muted small">{{ current_user.bio }}</p>
+                    {% endif %}
+                    
+                    <div class="profile-stats mt-3">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h5 class="mb-0">{{ current_user.projects|length }}</h5>
+                                    <small class="text-muted">Projects</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h5 class="mb-0">{{ current_user.achievements|length }}</h5>
+                                    <small class="text-muted">Achievements</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h5 class="mb-0">{{ current_user.comments|length }}</h5>
+                                    <small class="text-muted">Comments</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h5 class="fw-bold mb-3">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">
+                            <i class="fas fa-cog me-2"></i>Admin Dashboard
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('projects') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-laptop-code me-2"></i>View Projects
+                        </a>
+                        <a href="{{ url_for('achievements') }}" class="btn btn-outline-success">
+                            <i class="fas fa-trophy me-2"></i>View Achievements
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Form -->
+        <div class="col-lg-8">
+            <div class="profile-form-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit me-2 text-primary"></i>Edit Profile
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="profileForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Profile Image Upload -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Profile Image</label>
+                            <div class="profile-image-upload">
+                                <div class="upload-area" id="uploadArea">
+                                    <div class="upload-content">
+                                        <i class="fas fa-camera fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted mb-2">Click to upload or drag and drop</p>
+                                        <small class="text-muted">PNG, JPG, GIF up to 5MB</small>
+                                    </div>
+                                    {{ form.profile_image(class="d-none", id="profileImageInput") }}
+                                </div>
+                                {% if form.profile_image.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.profile_image.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Name Fields -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.first_name.label(class="form-label fw-bold") }}
+                                {{ form.first_name(class="form-control", placeholder="Enter your first name") }}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.first_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.last_name.label(class="form-label fw-bold") }}
+                                {{ form.last_name(class="form-control", placeholder="Enter your last name") }}
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.last_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Bio Field -->
+                        <div class="mb-3">
+                            {{ form.bio.label(class="form-label fw-bold") }}
+                            {{ form.bio(class="form-control", rows="4", placeholder="Tell us about yourself...") }}
+                            <div class="form-text">
+                                <span id="bioCount">{{ form.bio.data|length if form.bio.data else 0 }}</span>/500 characters
+                            </div>
+                            {% if form.bio.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.bio.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Email Notifications -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                {{ form.email_notifications(class="form-check-input") }}
+                                {{ form.email_notifications.label(class="form-check-label fw-bold") }}
+                            </div>
+                            <small class="form-text text-muted">
+                                Receive email notifications for comments and activities
+                            </small>
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="d-flex gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Account Settings -->
+            <div class="account-settings-card mt-4">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-cog me-2 text-primary"></i>Account Settings
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <div class="setting-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Change Password</h6>
+                                <small class="text-muted">Update your account password</small>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                Change
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="setting-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Account Information</h6>
+                                <small class="text-muted">
+                                    Member since {{ current_user.created_at|format_date('%B %Y') }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="savePasswordBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Profile image upload handling
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('profileImageInput');
+
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        previewImage(files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        previewImage(e.target.files[0]);
+    }
+});
+
+function previewImage(file) {
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const currentImg = document.getElementById('currentProfileImage');
+            const placeholder = document.getElementById('profilePlaceholder');
+            
+            if (currentImg) {
+                currentImg.src = e.target.result;
+            } else if (placeholder) {
+                placeholder.innerHTML = `<img src="${e.target.result}" alt="Preview" class="rounded-circle profile-img">`;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Bio character counter
+const bioTextarea = document.getElementById('bio');
+const bioCounter = document.getElementById('bioCount');
+
+if (bioTextarea && bioCounter) {
+    bioTextarea.addEventListener('input', () => {
+        const count = bioTextarea.value.length;
+        bioCounter.textContent = count;
+        
+        if (count > 450) {
+            bioCounter.classList.add('text-warning');
+        } else if (count > 500) {
+            bioCounter.classList.remove('text-warning');
+            bioCounter.classList.add('text-danger');
+        } else {
+            bioCounter.classList.remove('text-warning', 'text-danger');
+        }
+    });
+}
+
+// Reset form function
+function resetForm() {
+    if (confirm('Are you sure you want to reset all changes?')) {
+        document.getElementById('profileForm').reset();
+        
+        // Reset profile image preview
+        const currentImg = document.getElementById('currentProfileImage');
+        const placeholder = document.getElementById('profilePlaceholder');
+        
+        if (currentImg && '{{ current_user.profile_image }}') {
+            currentImg.src = "{{ url_for('static', filename='uploads/' + current_user.profile_image) }}";
+        } else if (placeholder) {
+            placeholder.innerHTML = '<i class="fas fa-user fa-3x text-muted"></i>';
+        }
+    }
+}
+
+// Change password handling
+document.getElementById('savePasswordBtn').addEventListener('click', () => {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Please fill in all password fields.');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        alert('New passwords do not match.');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        alert('New password must be at least 6 characters long.');
+        return;
+    }
+    
+    // Here you would typically send an AJAX request to change the password
+    // For now, we'll just show a success message
+    alert('Password changed successfully!');
+    document.getElementById('changePasswordForm').reset();
+    bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+});
+
+// Form validation
+document.getElementById('profileForm').addEventListener('submit', (e) => {
+    const bioLength = document.getElementById('bio').value.length;
+    if (bioLength > 500) {
+        e.preventDefault();
+        alert('Bio must be less than 500 characters.');
+    }
+});
+</script>
+{% endblock %}

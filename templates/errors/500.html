@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div class="error-page">
+                <!-- Error Illustration -->
+                <div class="error-illustration mb-4">
+                    <svg width="200" height="200" viewBox="0 0 200 200" class="text-danger">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                        <text x="100" y="110" text-anchor="middle" font-size="48" font-weight="bold" fill="currentColor">500</text>
+                        <!-- Warning icon -->
+                        <path d="M100 50 L100 90 M100 110 L100 120" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+                    </svg>
+                </div>
+                
+                <!-- Error Message -->
+                <h1 class="display-4 fw-bold mb-3">Internal Server Error</h1>
+                <p class="lead text-muted mb-4">
+                    Something went wrong on our end. We're working to fix this issue as quickly as possible.
+                </p>
+                
+                <!-- Technical Details (for development) -->
+                {% if config.DEBUG %}
+                <div class="alert alert-danger text-start mb-4">
+                    <h6>Technical Details (Debug Mode):</h6>
+                    <p class="mb-0">
+                        An internal server error occurred. Check the server logs for more details.
+                    </p>
+                </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <div class="error-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-home me-2"></i>Go Home
+                    </a>
+                    <button onclick="location.reload()" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-sync me-2"></i>Try Again
+                    </button>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="contact-info mt-5">
+                    <h5 class="fw-bold mb-3">Need Help?</h5>
+                    <p class="text-muted mb-3">
+                        If this problem persists, please contact us and we'll get it sorted out.
+                    </p>
+                    <a href="mailto:contact@portfolio.com" class="btn btn-outline-success">
+                        <i class="fas fa-envelope me-2"></i>Contact Support
+                    </a>
+                </div>
+                
+                <!-- Helpful Links -->
+                <div class="helpful-links mt-5">
+                    <h6 class="fw-bold mb-3">While you wait, check out:</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <a href="{{ url_for('projects') }}" class="text-decoration-none">
+                                <i class="fas fa-laptop-code me-2 text-primary"></i>Projects
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <a href="{{ url_for('achievements') }}" class="text-decoration-none">
+                                <i class="fas fa-trophy me-2 text-warning"></i>Achievements
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <a href="{{ url_for('about') }}" class="text-decoration-none">
+                                <i class="fas fa-user me-2 text-info"></i>About Me
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fab fa-github me-2 text-dark"></i>GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Background Animation -->
+<div class="error-bg-animation">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Add pulse animation to error number
+document.addEventListener('DOMContentLoaded', function() {
+    const errorNumber = document.querySelector('text');
+    if (errorNumber) {
+        setInterval(() => {
+            errorNumber.style.opacity = '0.5';
+            setTimeout(() => {
+                errorNumber.style.opacity = '1';
+            }, 500);
+        }, 2000);
+    }
+    
+    // Add floating animation to background shapes
+    const shapes = document.querySelectorAll('.floating-shape');
+    shapes.forEach((shape, index) => {
+        const duration = 4 + index * 0.5;
+        const delay = index * 0.8;
+        shape.style.animation = `floatError ${duration}s ${delay}s infinite ease-in-out`;
+    });
+});
+
+// Auto-retry functionality
+let retryCount = 0;
+const maxRetries = 3;
+
+function autoRetry() {
+    if (retryCount < maxRetries) {
+        setTimeout(() => {
+            retryCount++;
+            console.log(`Auto-retry attempt ${retryCount}/${maxRetries}`);
+            location.reload();
+        }, 5000 * retryCount); // Increasing delay
+    }
+}
+
+// Only auto-retry if not in debug mode
+{% if not config.DEBUG %}
+autoRetry();
+{% endif %}
+</script>
+
+<style>
+.error-page {
+    position: relative;
+    z-index: 2;
+}
+
+.error-bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.08;
+}
+
+.floating-shape {
+    position: absolute;
+    background: linear-gradient(45deg, #dc3545, #fd7e14);
+    border-radius: 50%;
+    animation: floatError 5s infinite ease-in-out;
+}
+
+.shape-1 {
+    width: 50px;
+    height: 50px;
+    top: 15%;
+    left: 15%;
+}
+
+.shape-2 {
+    width: 70px;
+    height: 70px;
+    top: 70%;
+    right: 20%;
+}
+
+.shape-3 {
+    width: 30px;
+    height: 30px;
+    bottom: 30%;
+    left: 25%;
+}
+
+.shape-4 {
+    width: 90px;
+    height: 90px;
+    top: 40%;
+    right: 10%;
+}
+
+@keyframes floatError {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+    33% {
+        transform: translateY(-15px) rotate(120deg) scale(1.1);
+    }
+    66% {
+        transform: translateY(-5px) rotate(240deg) scale(0.9);
+    }
+}
+
+.helpful-links a {
+    display: block;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+}
+
+.helpful-links a:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Pulse animation for error number */
+.error-illustration text {
+    transition: opacity 0.5s ease-in-out;
+}
+</style>
+{% endblock %}

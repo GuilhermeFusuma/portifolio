@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}About - Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Profile Section -->
+        <div class="col-lg-4 mb-5">
+            <div class="profile-card text-center sticky-top">
+                <div class="profile-image mb-3">
+                    {% if admin_user and admin_user.profile_image %}
+                    <img src="{{ url_for('static', filename='uploads/' + admin_user.profile_image) }}" 
+                         alt="Profile" class="rounded-circle profile-img">
+                    {% else %}
+                    <div class="profile-placeholder rounded-circle">
+                        <i class="fas fa-user fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <h2 class="fw-bold mb-2">
+                    {% if admin_user %}
+                        {{ admin_user.full_name }}
+                    {% else %}
+                        Portfolio Owner
+                    {% endif %}
+                </h2>
+                <p class="text-primary mb-3">Full-Stack Developer</p>
+                
+                {% if admin_user and admin_user.bio %}
+                <p class="text-muted mb-4">{{ admin_user.bio }}</p>
+                {% else %}
+                <p class="text-muted mb-4">
+                    Passionate developer creating innovative digital solutions with modern technologies.
+                </p>
+                {% endif %}
+                
+                <div class="social-links mb-4">
+                    <a href="#" class="btn btn-outline-primary btn-sm me-2">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-primary btn-sm me-2">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-primary btn-sm me-2">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="mailto:contact@portfolio.com" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+                
+                <a href="mailto:contact@portfolio.com" class="btn btn-primary">
+                    <i class="fas fa-envelope me-2"></i>Get In Touch
+                </a>
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="col-lg-8">
+            <!-- About Me -->
+            <section class="mb-5">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-user me-2 text-primary"></i>About Me
+                </h3>
+                <p class="lead mb-4">
+                    I'm a passionate full-stack developer with over 5 years of experience creating 
+                    digital solutions that make a difference. I specialize in modern web technologies 
+                    and have a keen eye for user experience design.
+                </p>
+                <p class="mb-4">
+                    My journey in tech started with a curiosity about how things work and evolved 
+                    into a career focused on building scalable, user-friendly applications. I believe 
+                    in writing clean, maintainable code and following best practices in software development.
+                </p>
+                <p>
+                    When I'm not coding, you can find me exploring new technologies, contributing to 
+                    open-source projects, or sharing knowledge with the developer community through 
+                    blog posts and workshops.
+                </p>
+            </section>
+            
+            <!-- Experience -->
+            <section class="mb-5">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-briefcase me-2 text-primary"></i>Experience
+                </h3>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5 class="fw-bold">Senior Full-Stack Developer</h5>
+                            <p class="text-primary mb-2">TechCorp Inc. • 2022 - Present</p>
+                            <p class="text-muted mb-3">
+                                Leading development of enterprise web applications using React, Node.js, 
+                                and AWS. Mentoring junior developers and implementing CI/CD pipelines.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="badge bg-light text-dark me-1">React</span>
+                                <span class="badge bg-light text-dark me-1">Node.js</span>
+                                <span class="badge bg-light text-dark me-1">AWS</span>
+                                <span class="badge bg-light text-dark me-1">PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5 class="fw-bold">Full-Stack Developer</h5>
+                            <p class="text-primary mb-2">StartupXYZ • 2020 - 2022</p>
+                            <p class="text-muted mb-3">
+                                Built scalable web applications from scratch using Flask and Vue.js. 
+                                Implemented real-time features and optimized database performance.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="badge bg-light text-dark me-1">Vue.js</span>
+                                <span class="badge bg-light text-dark me-1">Flask</span>
+                                <span class="badge bg-light text-dark me-1">Python</span>
+                                <span class="badge bg-light text-dark me-1">MongoDB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h5 class="fw-bold">Junior Web Developer</h5>
+                            <p class="text-primary mb-2">WebAgency • 2019 - 2020</p>
+                            <p class="text-muted mb-3">
+                                Developed responsive websites and e-commerce platforms using HTML, CSS, 
+                                JavaScript, and PHP. Collaborated with design teams to implement pixel-perfect UIs.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="badge bg-light text-dark me-1">JavaScript</span>
+                                <span class="badge bg-light text-dark me-1">PHP</span>
+                                <span class="badge bg-light text-dark me-1">MySQL</span>
+                                <span class="badge bg-light text-dark me-1">WordPress</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Education -->
+            <section class="mb-5">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-graduation-cap me-2 text-primary"></i>Education
+                </h3>
+                
+                <div class="education-item">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <div class="education-date">
+                                <span class="badge bg-primary">2015 - 2019</span>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h5 class="fw-bold mb-1">Bachelor of Computer Science</h5>
+                            <p class="text-primary mb-2">University of Technology</p>
+                            <p class="text-muted">
+                                Specialized in software engineering and web development. 
+                                Graduated Magna Cum Laude with a focus on full-stack development 
+                                and database systems.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Skills -->
+            <section class="mb-5">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-cogs me-2 text-primary"></i>Technical Skills
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h6 class="fw-bold mb-3">Programming Languages</h6>
+                        <div class="skill-progress mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>JavaScript</span>
+                                <span>95%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Python</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>TypeScript</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <h6 class="fw-bold mb-3">Frameworks & Tools</h6>
+                        <div class="skill-progress mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>React</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Flask/Django</span>
+                                <span>88%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 88%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>AWS</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Interests -->
+            <section class="mb-5">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-heart me-2 text-primary"></i>Interests & Hobbies
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="interest-item">
+                            <i class="fas fa-code text-primary me-2"></i>
+                            <span>Open Source Contributing</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="interest-item">
+                            <i class="fas fa-camera text-primary me-2"></i>
+                            <span>Photography</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="interest-item">
+                            <i class="fas fa-mountain text-primary me-2"></i>
+                            <span>Hiking & Nature</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="interest-item">
+                            <i class="fas fa-book text-primary me-2"></i>
+                            <span>Reading Tech Blogs</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="interest-item">
+                            <i class="fas fa-gamepad text-primary me-2"></i>
+                            <span>Game Development</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="interest-item">
+                            <i class="fas fa-music text-primary me-2"></i>
+                            <span>Music Production</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Contact CTA -->
+            <section class="bg-light rounded p-4 text-center">
+                <h4 class="fw-bold mb-3">Let's Work Together</h4>
+                <p class="text-muted mb-4">
+                    I'm always interested in new opportunities and exciting projects. 
+                    Feel free to reach out if you'd like to collaborate!
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="mailto:contact@portfolio.com" class="btn btn-primary">
+                        <i class="fas fa-envelope me-2"></i>Send Email
+                    </a>
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>Download Resume
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
