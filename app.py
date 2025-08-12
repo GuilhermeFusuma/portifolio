@@ -14,6 +14,8 @@ logging.basicConfig(level=logging.DEBUG)
 class Base(DeclarativeBase):
     pass
 
+#teste
+
 # Initialize extensions
 db = SQLAlchemy(model_class=Base)
 login_manager = LoginManager()
