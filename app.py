@@ -83,9 +83,9 @@ def create_app():
         return text[:length].rsplit(' ', 1)[0] + '...'
     
     @app.template_filter('format_date')
-    def format_date(date):
+    def format_date(date, format_str='%B %d, %Y'):
         if date:
-            return date.strftime('%B %d, %Y')
+            return date.strftime(format_str)
         return ''
     
     @app.template_filter('from_json')
@@ -95,6 +95,14 @@ def create_app():
             return json.loads(value) if value else []
         except (ValueError, TypeError):
             return []
+    
+    @app.template_filter('reading_time')
+    def reading_time(text):
+        if not text:
+            return 1
+        word_count = len(text.split())
+        # Average reading speed is 200 words per minute
+        return max(1, round(word_count / 200))
     
     return app
 
