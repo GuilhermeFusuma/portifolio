@@ -1,0 +1,93 @@
+Create a complete online portfolio system with an admin panel, public area, authentication, social interactions, and responsive design, using the following specifications:
+
+1. General Structure
+Create two separate folders: frontend (React with Tailwind CSS) and backend (Python with Flask).
+
+The backend will handle authentication, project/achievement management, likes, comments, and integration with external APIs.
+
+The frontend will provide the interface and communicate with the backend via a REST API.
+
+Database: SQLite by default (Replit compatible), but with easy configuration to migrate to PostgreSQL later.
+
+Ensure the application is responsive and works with modern browsers.
+
+2. Design and Visual Identity
+Color palette: shades of purple and blue.
+
+Minimalistic yet interactive design, with subtle animations.
+
+Use TailwindCSS for styling.
+
+3. Admin Area (restricted)
+Login allowed only for a specific email (owner).
+
+Create, edit, and delete achievements and projects.
+
+Upload images, videos, or demo links.
+
+Organize by categories or tags.
+
+Option to publish or save as draft.
+
+Comment listing with moderation tools.
+
+Internal notifications system when a comment is posted.
+
+Option to enable/disable email notifications.
+
+4. Public Area (visitors)
+View projects and achievements.
+
+Filter by categories/tags.
+
+Like button with counter (allowed for anonymous visitors).
+
+Comment field only for logged-in users.
+
+LinkedIn share button with custom preview (image, title, description).
+
+5. Authentication and Profiles
+Registration and login via email/password.
+
+Integration with Google and LinkedIn login (OAuth).
+
+Password recovery via email.
+
+User profiles with photo and basic information.
+
+6. Backend (Flask)
+Organized structure using blueprints for routes separation.
+
+JWT authentication with refresh tokens.
+
+Protected routes for admin area.
+
+File uploads to a local uploads/ folder, with easy adaptation for external storage.
+
+Integration with LinkedIn API to generate custom preview when sharing.
+
+Scripts to create the database and seed initial data with at least 2 projects and 2 achievements.
+
+7. Frontend (React + Tailwind CSS)
+Routes: Home, About Me, Projects List, Project Details, Login, Register, Admin Panel.
+
+State management with Context API or Redux.
+
+Form validation for submitting projects/achievements and comments.
+
+Responsive layout for desktop, tablet, and mobile.
+
+8. Documentation
+Create a README.md with instructions to install and run the project.
+
+List required environment variables (LinkedIn keys, Google OAuth, database settings).
+
+Explain how to change the email notifications settings.
+
+9. Notes
+Code must run directly on Replit without complex adjustments.
+
+Dependencies listed in requirements.txt (backend) and package.json (frontend).
+
+The project should run with one command for the backend and one for the frontend (flask run and npm start).
+
