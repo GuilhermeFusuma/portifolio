@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeScrollEffects();
     initializeTooltips();
     initializeModals();
+    initializeSearchAndFilter();
+    initializeLikeSystem();
     
     console.log('Portfolio JavaScript initialized');
 });
@@ -475,6 +477,32 @@ function getTextNodes(element) {
     }
     
     return textNodes;
+}
+
+function performFilter(value, target) {
+    const items = document.querySelectorAll(`[data-filterable="${target}"]`);
+    
+    items.forEach(item => {
+        if (!value || value === '' || item.dataset.category === value || item.dataset.tag === value) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function updateSearchResults(items, query) {
+    const resultCount = Array.from(items).filter(item => item.style.display !== 'none').length;
+    const resultMessage = document.querySelector('[data-search-results]');
+    
+    if (resultMessage) {
+        if (query) {
+            resultMessage.textContent = `Found ${resultCount} result${resultCount !== 1 ? 's' : ''} for "${query}"`;
+            resultMessage.style.display = 'block';
+        } else {
+            resultMessage.style.display = 'none';
+        }
+    }
 }
 
 /* ===============================
