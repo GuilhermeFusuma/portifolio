@@ -26,13 +26,13 @@ export default function Admin() {
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
+        title: "Login necessário",
+        description: "Faça login para acessar a área administrativa...",
         variant: "destructive",
       });
       setTimeout(() => {
         window.location.href = "/api/login";
-      }, 500);
+      }, 1500);
       return;
     }
   }, [isAuthenticated, isLoading, toast]);
@@ -227,17 +227,17 @@ export default function Admin() {
             {!projectsLoading && projects?.length === 0 && (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <p className="text-muted-foreground mb-4">No projects yet</p>
+                  <p className="text-muted-foreground mb-4">Você ainda não tem projetos</p>
                   <Dialog open={isProjectFormOpen} onOpenChange={setIsProjectFormOpen}>
                     <DialogTrigger asChild>
                       <Button data-testid="button-create-first-project">
                         <Plus className="h-4 w-4 mr-2" />
-                        Create Your First Project
+                        Criar Seu Primeiro Projeto
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader>
-                        <DialogTitle>Add New Project</DialogTitle>
+                        <DialogTitle>Adicionar Novo Projeto</DialogTitle>
                       </DialogHeader>
                       <ProjectForm onClose={handleProjectFormClose} />
                     </DialogContent>
@@ -248,7 +248,7 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <h2 className="text-2xl font-semibold text-foreground">Portfolio Analytics</h2>
+            <h2 className="text-2xl font-semibold text-foreground">Estatísticas do Portfólio</h2>
             
             {statsLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -265,7 +265,7 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
+                    <CardTitle className="text-sm font-medium">Total de Projetos</CardTitle>
                     <BarChart3 className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
@@ -277,7 +277,7 @@ export default function Admin() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Likes</CardTitle>
+                    <CardTitle className="text-sm font-medium">Total de Curtidas</CardTitle>
                     <Heart className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
@@ -289,7 +289,7 @@ export default function Admin() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Comments</CardTitle>
+                    <CardTitle className="text-sm font-medium">Total de Comentários</CardTitle>
                     <MessageCircle className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>

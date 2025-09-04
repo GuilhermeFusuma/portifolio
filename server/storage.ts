@@ -310,7 +310,49 @@ export class DatabaseStorage implements IStorage {
 
   // Admin operations
   async getProjectsByOwner(ownerId: string): Promise<ProjectWithDetails[]> {
-    return this.getProjects({ published: undefined }); // Get all projects regardless of published status
+    const query = db
+      .select({
+        project: projects,
+        owner: users,
+        category: categories,
+        likesCount: count(projectLikes.id).as('likesCount'),
+      })
+      .from(projects)
+      .leftJoin(users, eq(projects.ownerId, users.id))
+      .leftJoin(categories, eq(projects.categoryId, categories.id))
+      .leftJoin(projectLikes, eq(projects.id, projectLikes.projectId))
+      .where(eq(projects.ownerId, ownerId))
+      .groupBy(projects.id, users.id, categories.id)
+      .orderBy(desc(projects.createdAt));
+
+    const results = await query;
+
+    const projectsWithDetails: ProjectWithDetails[] = await Promise.all(
+      results.map(async (result) => {
+        const likes = await db.select().from(projectLikes).where(eq(projectLikes.projectId, result.project.id));
+        const comments = await db
+          .select({
+            comment: projectComments,
+            user: users,
+          })
+          .from(projectComments)
+          .leftJoin(users, eq(projectComments.userId, users.id))
+          .where(eq(projectComments.projectId, result.project.id))
+          .orderBy(desc(projectComments.createdAt));
+
+        return {
+          ...result.project,
+          owner: result.owner!,
+          category: result.category,
+          likes,
+          comments: comments.map(c => ({ ...c.comment, user: c.user! })),
+          likesCount: result.likesCount,
+          commentsCount: comments.length,
+        };
+      })
+    );
+
+    return projectsWithDetails;
   }
 
   async getProjectStats(ownerId: string): Promise<{ totalProjects: number; totalLikes: number; totalComments: number }> {
