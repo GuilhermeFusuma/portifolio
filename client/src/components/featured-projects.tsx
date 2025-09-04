@@ -83,7 +83,7 @@ export default function FeaturedProjects() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     {project.category && (
-                      <Badge style={{ backgroundColor: project.category.color }} className="text-white">
+                      <Badge style={{ backgroundColor: project.category.color || '#3B82F6' }} className="text-white">
                         {project.category.name}
                       </Badge>
                     )}

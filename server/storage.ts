@@ -216,7 +216,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteProject(id: string): Promise<boolean> {
     const result = await db.delete(projects).where(eq(projects.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async incrementProjectViews(id: string): Promise<void> {
@@ -277,7 +277,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(projectComments)
       .where(and(eq(projectComments.id, id), eq(projectComments.userId, userId)));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Notification operations
@@ -287,17 +287,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserNotifications(userId: string, unreadOnly = false): Promise<Notification[]> {
-    const query = db
-      .select()
-      .from(notifications)
-      .where(eq(notifications.userId, userId))
-      .orderBy(desc(notifications.createdAt));
-
+    const whereConditions = [eq(notifications.userId, userId)];
+    
     if (unreadOnly) {
-      query.where(eq(notifications.isRead, false));
+      whereConditions.push(eq(notifications.isRead, false));
     }
 
-    return await query;
+    return await db
+      .select()
+      .from(notifications)
+      .where(and(...whereConditions))
+      .orderBy(desc(notifications.createdAt));
   }
 
   async markNotificationAsRead(id: string, userId: string): Promise<boolean> {
@@ -305,7 +305,7 @@ export class DatabaseStorage implements IStorage {
       .update(notifications)
       .set({ isRead: true })
       .where(and(eq(notifications.id, id), eq(notifications.userId, userId)));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Admin operations

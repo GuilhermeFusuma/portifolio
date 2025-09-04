@@ -115,7 +115,7 @@ export default function AllProjectsSection() {
                   <div className="flex items-center justify-between mb-2">
                     {project.category && (
                       <Badge
-                        style={{ backgroundColor: project.category.color }}
+                        style={{ backgroundColor: project.category.color || '#3B82F6' }}
                         className="text-white text-xs"
                         data-testid={`badge-category-${project.id}`}
                       >
