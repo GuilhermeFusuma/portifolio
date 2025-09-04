@@ -21,13 +21,24 @@ export default function Navigation({ isAuthenticated }: NavigationProps) {
 
   const NavLinks = () => (
     <>
-      <button
-        onClick={() => scrollToSection("inicio")}
-        className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        data-testid="link-inicio"
-      >
-        Início
-      </button>
+      <Link href="/">
+        <button
+          className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors"
+          data-testid="link-home"
+        >
+          Início
+        </button>
+      </Link>
+      {isAuthenticated && (
+        <Link href="/projects">
+          <button
+            className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            data-testid="link-projects"
+          >
+            Feed
+          </button>
+        </Link>
+      )}
       <button
         onClick={() => scrollToSection("sobre")}
         className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -70,6 +81,11 @@ export default function Navigation({ isAuthenticated }: NavigationProps) {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
+                <Link href="/projects">
+                  <Button variant="outline" size="sm" data-testid="link-projects-nav">
+                    Feed
+                  </Button>
+                </Link>
                 <Link href="/admin">
                   <Button variant="outline" size="sm" data-testid="link-admin">
                     <Settings className="h-4 w-4 mr-2" />
