@@ -1,0 +1,749 @@
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Digital Interativo - Design Moderno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                }
+            }
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(210 40% 98%);
+            --foreground: hsl(222 47% 11%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222 47% 11%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222 47% 11%);
+            --primary: hsl(221 83% 53%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(210 40% 96%);
+            --secondary-foreground: hsl(222 47% 11%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215 16% 47%);
+            --accent: hsl(210 40% 96%);
+            --accent-foreground: hsl(222 47% 11%);
+            --destructive: hsl(0 100% 50%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214 32% 91%);
+            --input: hsl(214 32% 91%);
+            --ring: hsl(221 83% 53%);
+            --radius: 12px;
+            --font-sans: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, hsl(210 40% 98%) 0%, hsl(220 60% 99%) 100%);
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+        .modal-overlay {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground font-sans antialiased">
+    <!-- @COMPONENT: Navigation -->
+    <nav class="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-primary">Portfolio AI</h1>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#inicio" class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">Início</a>
+                            <a href="#sobre" class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">Sobre</a>
+                            <a href="#projetos" class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">Projetos</a>
+                            <a href="#contato" class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">Contato</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="openModal('loginModal')" class="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium transition-colors">
+                        Login
+                    </button>
+                    <button onclick="openModal('adminModal')" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Admin
+                    </button>
+                    <button class="md:hidden" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- @COMPONENT: Hero Section -->
+    <section id="inicio" class="gradient-bg py-20 lg:py-32">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="mb-8">
+                    <!-- Professional headshot portrait of a software developer -->
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300" 
+                         alt="Foto do desenvolvedor" 
+                         class="w-32 h-32 rounded-full mx-auto shadow-xl ring-4 ring-primary/20" />
+                </div>
+                <h1 class="text-4xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+                    Portfolio Digital
+                    <span class="text-primary block">Interativo</span>
+                </h1>
+                <p class="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+                    Desenvolvedor Full Stack especializado em criar experiências digitais inovadoras com inteligência artificial
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="scrollToSection('projetos')" class="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl">
+                        Ver Projetos
+                    </button>
+                    <button onclick="scrollToSection('sobre')" class="bg-card text-card-foreground hover:bg-accent border border-border px-8 py-3 rounded-lg font-medium transition-all duration-300">
+                        Sobre Mim
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Hero Section -->
+
+    <!-- @COMPONENT: Featured Projects -->
+    <section class="py-20 bg-background">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-foreground mb-4">Projetos em Destaque</h2>
+                <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+                    Seleção dos projetos mais curtidos e recentes do meu portfolio
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- @MAP: featuredProjects.map(project => ( -->
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- AI-powered dashboard with charts and data visualization -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" 
+                         alt="Dashboard AI Analytics" 
+                         class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">IA</span>
+                            <div class="flex items-center space-x-2 text-muted-foreground">
+                                <button class="hover:text-red-500 transition-colors" data-event="click:handleLike">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <span class="text-sm">24</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-card-foreground mb-2">Dashboard Analytics AI</h3>
+                        <p class="text-muted-foreground mb-4">Sistema de análise de dados com inteligência artificial para insights em tempo real</p>
+                        <div class="flex items-center justify-between">
+                            <button onclick="openProjectModal('project1')" class="text-primary hover:text-primary/80 font-medium transition-colors">
+                                Ver Detalhes
+                            </button>
+                            <button class="text-muted-foreground hover:text-foreground transition-colors" title="Compartilhar no LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- E-commerce website with modern shopping interface -->
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" 
+                         alt="E-commerce Platform" 
+                         class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm font-medium">Web</span>
+                            <div class="flex items-center space-x-2 text-muted-foreground">
+                                <button class="hover:text-red-500 transition-colors" data-event="click:handleLike">
+                                    <i class="fas fa-heart text-red-500"></i>
+                                </button>
+                                <span class="text-sm">18</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-card-foreground mb-2">Plataforma E-commerce</h3>
+                        <p class="text-muted-foreground mb-4">Sistema completo de vendas online com integração de pagamentos e gestão de estoque</p>
+                        <div class="flex items-center justify-between">
+                            <button onclick="openProjectModal('project2')" class="text-primary hover:text-primary/80 font-medium transition-colors">
+                                Ver Detalhes
+                            </button>
+                            <button class="text-muted-foreground hover:text-foreground transition-colors" title="Compartilhar no LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- Mobile app interface design with clean UI elements -->
+                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" 
+                         alt="Mobile App Design" 
+                         class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium">Mobile</span>
+                            <div class="flex items-center space-x-2 text-muted-foreground">
+                                <button class="hover:text-red-500 transition-colors" data-event="click:handleLike">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <span class="text-sm">31</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-card-foreground mb-2">App Fitness Tracker</h3>
+                        <p class="text-muted-foreground mb-4">Aplicativo mobile para acompanhamento de exercícios e metas de saúde</p>
+                        <div class="flex items-center justify-between">
+                            <button onclick="openProjectModal('project3')" class="text-primary hover:text-primary/80 font-medium transition-colors">
+                                Ver Detalhes
+                            </button>
+                            <button class="text-muted-foreground hover:text-foreground transition-colors" title="Compartilhar no LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+            <div class="text-center mt-12">
+                <button onclick="scrollToSection('projetos')" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-8 py-3 rounded-lg font-medium transition-colors">
+                    Ver Todos os Projetos
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Featured Projects -->
+
+    <!-- @COMPONENT: About Section -->
+    <section id="sobre" class="py-20 bg-muted/30">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-foreground mb-4">Sobre Mim</h2>
+                    <p class="text-muted-foreground text-lg">
+                        Desenvolvedor apaixonado por tecnologia e inovação
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <!-- Software developer working on laptop in modern office -->
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" 
+                             alt="Desenvolvedor trabalhando" 
+                             class="rounded-xl shadow-lg w-full" />
+                    </div>
+                    <div class="space-y-6">
+                        <p class="text-muted-foreground text-lg leading-relaxed">
+                            Sou um desenvolvedor Full Stack com mais de 5 anos de experiência na criação de soluções digitais inovadoras. 
+                            Especializo-me em integrar inteligência artificial em aplicações web para criar experiências únicas e eficientes.
+                        </p>
+                        <p class="text-muted-foreground text-lg leading-relaxed">
+                            Minha missão é transformar ideias complexas em interfaces simples e intuitivas, sempre priorizando a experiência do usuário 
+                            e a performance das aplicações.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-card p-4 rounded-lg border border-border">
+                                <h4 class="font-semibold text-card-foreground mb-2">Frontend</h4>
+                                <p class="text-sm text-muted-foreground">React, Next.js, TypeScript</p>
+                            </div>
+                            <div class="bg-card p-4 rounded-lg border border-border">
+                                <h4 class="font-semibold text-card-foreground mb-2">Backend</h4>
+                                <p class="text-sm text-muted-foreground">Node.js, Python, PostgreSQL</p>
+                            </div>
+                            <div class="bg-card p-4 rounded-lg border border-border">
+                                <h4 class="font-semibold text-card-foreground mb-2">IA/ML</h4>
+                                <p class="text-sm text-muted-foreground">TensorFlow, OpenAI, Replit AI</p>
+                            </div>
+                            <div class="bg-card p-4 rounded-lg border border-border">
+                                <h4 class="font-semibold text-card-foreground mb-2">DevOps</h4>
+                                <p class="text-sm text-muted-foreground">Docker, AWS, Vercel</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: About Section -->
+
+    <!-- @COMPONENT: All Projects Section -->
+    <section id="projetos" class="py-20 bg-background">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-foreground mb-4">Todos os Projetos</h2>
+                <p class="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+                    Explore minha coleção completa de projetos e conquistas
+                </p>
+                <!-- Filter Tags -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button class="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                        Todos
+                    </button>
+                    <button class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                        IA
+                    </button>
+                    <button class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                        Web
+                    </button>
+                    <button class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                        Mobile
+                    </button>
+                    <button class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                        Backend
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- @MAP: allProjects.map(project => ( -->
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- Modern web application dashboard interface -->
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" 
+                         alt="CRM System" 
+                         class="w-full h-32 object-cover" />
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-medium">Web</span>
+                            <div class="flex items-center space-x-1 text-muted-foreground">
+                                <i class="fas fa-heart text-red-500 text-xs"></i>
+                                <span class="text-xs">12</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-card-foreground mb-1 text-sm">Sistema CRM</h3>
+                        <p class="text-muted-foreground text-xs mb-3">Gestão de relacionamento com clientes</p>
+                        <button onclick="openProjectModal('crm')" class="text-primary hover:text-primary/80 text-xs font-medium transition-colors">
+                            Ver Detalhes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- AI chatbot interface with conversation bubbles -->
+                    <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" 
+                         alt="AI Chatbot" 
+                         class="w-full h-32 object-cover" />
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-xs font-medium">IA</span>
+                            <div class="flex items-center space-x-1 text-muted-foreground">
+                                <i class="far fa-heart text-xs"></i>
+                                <span class="text-xs">8</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-card-foreground mb-1 text-sm">Chatbot Inteligente</h3>
+                        <p class="text-muted-foreground text-xs mb-3">Assistente virtual com IA</p>
+                        <button onclick="openProjectModal('chatbot')" class="text-primary hover:text-primary/80 text-xs font-medium transition-colors">
+                            Ver Detalhes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- Data visualization charts and graphs -->
+                    <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" 
+                         alt="Analytics Platform" 
+                         class="w-full h-32 object-cover" />
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-accent text-accent-foreground px-2 py-1 rounded-full text-xs font-medium">Analytics</span>
+                            <div class="flex items-center space-x-1 text-muted-foreground">
+                                <i class="far fa-heart text-xs"></i>
+                                <span class="text-xs">15</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-card-foreground mb-1 text-sm">Plataforma Analytics</h3>
+                        <p class="text-muted-foreground text-xs mb-3">Visualização de dados em tempo real</p>
+                        <button onclick="openProjectModal('analytics')" class="text-primary hover:text-primary/80 text-xs font-medium transition-colors">
+                            Ver Detalhes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl shadow-lg overflow-hidden card-hover border border-border" data-mock="true">
+                    <!-- Task management application interface -->
+                    <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" 
+                         alt="Task Manager" 
+                         class="w-full h-32 object-cover" />
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="bg-muted text-muted-foreground px-2 py-1 rounded-full text-xs font-medium">Productivity</span>
+                            <div class="flex items-center space-x-1 text-muted-foreground">
+                                <i class="fas fa-heart text-red-500 text-xs"></i>
+                                <span class="text-xs">20</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-card-foreground mb-1 text-sm">Gerenciador de Tarefas</h3>
+                        <p class="text-muted-foreground text-xs mb-3">Organização e produtividade</p>
+                        <button onclick="openProjectModal('taskmanager')" class="text-primary hover:text-primary/80 text-xs font-medium transition-colors">
+                            Ver Detalhes
+                        </button>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: All Projects Section -->
+
+    <!-- @COMPONENT: Contact Section -->
+    <section id="contato" class="py-20 bg-muted/30">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mx-auto text-center">
+                <h2 class="text-3xl lg:text-4xl font-bold text-foreground mb-4">Vamos Conversar?</h2>
+                <p class="text-muted-foreground text-lg mb-8">
+                    Interessado em colaborar ou discutir um projeto? Entre em contato!
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                    <a href="mailto:contato@portfolio.dev" class="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center justify-center">
+                        <i class="fas fa-envelope mr-2"></i>
+                        Email
+                    </a>
+                    <a href="https://linkedin.com/in/portfolio" class="bg-card text-card-foreground hover:bg-accent border border-border px-8 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center justify-center">
+                        <i class="fab fa-linkedin mr-2"></i>
+                        LinkedIn
+                    </a>
+                </div>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-twitter text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Contact Section -->
+
+    <!-- @COMPONENT: Footer -->
+    <footer class="bg-card border-t border-border py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-xl font-bold text-card-foreground mb-2">Portfolio AI</h3>
+                <p class="text-muted-foreground mb-4">
+                    Desenvolvido com 💙 usando Inteligência Artificial
+                </p>
+                <p class="text-sm text-muted-foreground">
+                    © 2024 Portfolio Digital. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <!-- @COMPONENT: Floating Action Button -->
+    <div class="floating-action">
+        <button onclick="openModal('addProjectModal')" class="bg-primary text-primary-foreground hover:bg-primary/90 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center" title="Adicionar Projeto">
+            <i class="fas fa-plus text-xl"></i>
+        </button>
+    </div>
+    <!-- @END_COMPONENT: Floating Action Button -->
+
+    <!-- @COMPONENT: Login Modal -->
+    <div id="loginModal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4">
+        <div class="bg-card rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-card-foreground">Login</h3>
+                <button onclick="closeModal('loginModal')" class="text-muted-foreground hover:text-foreground transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-card-foreground mb-2">Email</label>
+                    <input type="email" placeholder="seu@email.com" class="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground" data-implementation="Connect to authentication system">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-card-foreground mb-2">Senha</label>
+                    <input type="password" placeholder="••••••••" class="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground" data-implementation="Connect to authentication system">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-border text-primary focus:ring-ring">
+                        <span class="ml-2 text-sm text-muted-foreground">Lembrar-me</span>
+                    </label>
+                    <a href="#" class="text-sm text-primary hover:text-primary/80 transition-colors">Esqueci a senha</a>
+                </div>
+                <button type="submit" class="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 rounded-lg font-medium transition-colors" data-event="submit:handleLogin">
+                    Entrar
+                </button>
+                <div class="text-center">
+                    <span class="text-sm text-muted-foreground">Não tem conta? </span>
+                    <button type="button" onclick="openModal('signupModal')" class="text-sm text-primary hover:text-primary/80 transition-colors">Cadastre-se</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Login Modal -->
+
+    <!-- @COMPONENT: Admin Modal -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4">
+        <div class="bg-card rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-border">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-card-foreground">Painel Administrativo</h3>
+                    <button onclick="closeModal('adminModal')" class="text-muted-foreground hover:text-foreground transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <h4 class="text-lg font-semibold text-card-foreground mb-4">Gerenciar Projetos</h4>
+                        <div class="space-y-4">
+                            <!-- @MAP: adminProjects.map(project => ( -->
+                            <div class="bg-muted/50 p-4 rounded-lg border border-border" data-mock="true">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h5 class="font-medium text-card-foreground" data-bind="project.title">Dashboard Analytics AI</h5>
+                                        <p class="text-sm text-muted-foreground" data-bind="project.status">Publicado</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="text-primary hover:text-primary/80 text-sm" data-event="click:editProject">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-destructive hover:text-destructive/80 text-sm" data-event="click:deleteProject">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mt-2 flex items-center space-x-4 text-xs text-muted-foreground">
+                                    <span><i class="fas fa-heart text-red-500"></i> 24 curtidas</span>
+                                    <span><i class="fas fa-comment"></i> 3 comentários</span>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-card-foreground mb-4">Estatísticas</h4>
+                        <div class="space-y-4">
+                            <div class="bg-primary/10 p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-primary" data-bind="stats.totalProjects">12</div>
+                                <div class="text-sm text-muted-foreground">Total de Projetos</div>
+                            </div>
+                            <div class="bg-secondary p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-secondary-foreground" data-bind="stats.totalLikes">156</div>
+                                <div class="text-sm text-muted-foreground">Total de Curtidas</div>
+                            </div>
+                            <div class="bg-accent p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-accent-foreground" data-bind="stats.totalComments">42</div>
+                                <div class="text-sm text-muted-foreground">Total de Comentários</div>
+                            </div>
+                        </div>
+                        <button onclick="openModal('addProjectModal')" class="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 rounded-lg font-medium mt-6 transition-colors">
+                            Novo Projeto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Admin Modal -->
+
+    <!-- @COMPONENT: Project Detail Modal -->
+    <div id="projectModal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4">
+        <div class="bg-card rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-border">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-card-foreground" data-bind="currentProject.title">Dashboard Analytics AI</h3>
+                    <button onclick="closeModal('projectModal')" class="text-muted-foreground hover:text-foreground transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Project details content would be dynamically loaded here -->
+                <div class="space-y-6" data-mock="true">
+                    <!-- Advanced analytics dashboard with multiple charts -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&h=600" 
+                         alt="Dashboard detalhado" 
+                         class="w-full rounded-lg shadow-lg" />
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <h4 class="text-lg font-semibold text-card-foreground mb-3">Descrição do Projeto</h4>
+                            <p class="text-muted-foreground mb-4" data-bind="currentProject.description">
+                                Sistema completo de análise de dados com inteligência artificial, oferecendo insights em tempo real 
+                                para tomada de decisões estratégicas. Desenvolvido com React, Node.js e integração com APIs de machine learning.
+                            </p>
+                            <h5 class="font-semibold text-card-foreground mb-2">Tecnologias Utilizadas</h5>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">React</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Node.js</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">TensorFlow</span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">PostgreSQL</span>
+                            </div>
+                            <div class="border-t border-border pt-4">
+                                <h5 class="font-semibold text-card-foreground mb-3">Comentários</h5>
+                                <div class="space-y-3">
+                                    <!-- @MAP: comments.map(comment => ( -->
+                                    <div class="bg-muted/50 p-3 rounded-lg" data-mock="true">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-sm text-card-foreground" data-bind="comment.author">Maria Silva</span>
+                                            <span class="text-xs text-muted-foreground" data-bind="comment.date">2 dias atrás</span>
+                                        </div>
+                                        <p class="text-sm text-muted-foreground" data-bind="comment.content">Projeto incrível! A interface é muito intuitiva.</p>
+                                    </div>
+                                    <!-- @END_MAP )) -->
+                                </div>
+                                <div class="mt-4">
+                                    <textarea placeholder="Deixe seu comentário..." class="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground resize-none" rows="3" data-implementation="Requires user authentication"></textarea>
+                                    <button class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg text-sm font-medium mt-2 transition-colors" data-event="submit:addComment">
+                                        Comentar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bg-muted/50 p-4 rounded-lg space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-muted-foreground">Curtidas</span>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-red-500 hover:text-red-600 transition-colors" data-event="click:toggleLike">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                        <span class="font-semibold" data-bind="currentProject.likes">24</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-muted-foreground">Comentários</span>
+                                    <span class="font-semibold" data-bind="currentProject.comments">3</span>
+                                </div>
+                                <div class="border-t border-border pt-4">
+                                    <button class="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 py-2 rounded-lg font-medium transition-colors mb-2" data-event="click:shareLinkedIn">
+                                        <i class="fab fa-linkedin mr-2"></i>
+                                        Compartilhar no LinkedIn
+                                    </button>
+                                    <button class="w-full bg-muted text-muted-foreground hover:bg-muted/80 py-2 rounded-lg font-medium transition-colors">
+                                        <i class="fas fa-link mr-2"></i>
+                                        Copiar Link
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Project Detail Modal -->
+
+    <script>
+        // TODO: Implement proper state management and API integration
+        (function() {
+            // Modal management
+            window.openModal = function(modalId) {
+                document.getElementById(modalId).classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeModal = function(modalId) {
+                document.getElementById(modalId).classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+
+            // Project modal
+            window.openProjectModal = function(projectId) {
+                // TODO: Load project data from API
+                openModal('projectModal');
+            };
+
+            // Smooth scrolling
+            window.scrollToSection = function(sectionId) {
+                document.getElementById(sectionId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            };
+
+            // Mobile menu toggle
+            window.toggleMobileMenu = function() {
+                // TODO: Implement mobile menu toggle
+                console.log('Mobile menu toggle');
+            };
+
+            // Close modals when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal-overlay')) {
+                    const modals = ['loginModal', 'adminModal', 'projectModal', 'addProjectModal'];
+                    modals.forEach(modalId => {
+                        if (!document.getElementById(modalId).classList.contains('hidden')) {
+                            closeModal(modalId);
+                        }
+                    });
+                }
+            });
+
+            // TODO: Implement authentication, project management, and social features
+            // - User login/signup functionality
+            // - Project CRUD operations
+            // - Like/comment system
+            // - LinkedIn sharing integration
+            // - Real-time notifications
+            // - File upload for project media
+            // - Search and filtering
+            // - Analytics tracking
+        })();
+    </script>
+</body>
+</html>
